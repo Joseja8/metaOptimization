@@ -211,8 +211,9 @@ public class Menu {
             }
             return;
         }
-        
+
         ProblemResolver problemResolver = new ProblemResolver(file, algorithm, numberOfIterations, seed);
+        problemResolver.resolveNTimes();
     }
 
 }
