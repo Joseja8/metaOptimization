@@ -22,7 +22,7 @@ public class Problem {
     public int NUM_MACHINES;
     public int BEST_MAKESPAN;
     public int[][] TECH;
-    public int[][] TIME;
+    public Operation[][] OPS;
     public int[][] SOLUTION;
 
     public Problem(String file) {
@@ -41,13 +41,14 @@ public class Problem {
             BEST_MAKESPAN = in.nextInt();
 
             int[][] tech = new int[NUM_JOBS][NUM_MACHINES];
-            int[][] time = new int[NUM_JOBS][NUM_MACHINES];
+            Operation[][] ops = new Operation[NUM_JOBS][NUM_MACHINES];
             int[][] solution = new int[NUM_MACHINES][NUM_JOBS];
 
-            // Load operation's durations matrix.
+            // Load operation's matrix.
             for (int i = 0; i < NUM_JOBS; i++) {
                 for (int j = 0; j < NUM_MACHINES; j++) {
-                    time[i][j] = in.nextInt();
+                    Operation aux = new Operation(i, j, in.nextInt());
+                    ops[i][j] = aux;
                 }
             }
 
@@ -55,16 +56,17 @@ public class Problem {
             for (int i = 0; i < NUM_JOBS; i++) {
                 for (int j = 0; j < NUM_MACHINES; j++) {
                     tech[i][j] = in.nextInt();
+                    ops[i][j].machine = tech[i][j];
                 }
             }
 
             // Fill problem matrices with data.
-            TIME = time;
+            OPS = ops;
             TECH = tech;
             SOLUTION = solution;
 
             // DEBUG (print matrices).
-            //ProblemUtils.printMatrix(NUM_JOBS, NUM_MACHINES, TIME, TECH);
+            //ProblemUtils.printMatrix(NUM_JOBS, NUM_MACHINES, OPS, TECH);
             //ProblemUtils.printMatrix(NUM_MACHINES, NUM_JOBS, SOLUTION);
         } catch (FileNotFoundException ex) {
             Logger.getLogger(Problem.class.getName()).log(Level.SEVERE, null, ex);
