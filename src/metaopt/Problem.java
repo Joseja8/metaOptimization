@@ -55,7 +55,7 @@ public class Problem {
             // Load technological order matrix.
             for (int i = 0; i < NUM_JOBS; i++) {
                 for (int j = 0; j < NUM_MACHINES; j++) {
-                    tech[i][j] = in.nextInt();
+                    tech[i][j] = in.nextInt()-1;  // -1 because machines are 1-indexed.
                     ops[i][j].machine = tech[i][j];
                 }
             }
