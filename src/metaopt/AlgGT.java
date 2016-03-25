@@ -34,6 +34,7 @@ public class AlgGT {
         prepareAlgorithm();
         while (!schedulable.isEmpty()) {
             int minCompletionTime = findMinCompletionTime();
+            ArrayList<Operation> conflicts = buildConflicts();
         }
     }
 
@@ -50,15 +51,18 @@ public class AlgGT {
 
     private int findMinCompletionTime() {
         int min = 999999;
-        for (Operation operation : schedulable) {
-            int startTime = operation.startTime;
-            int job = operation.job;
-            int machine = operation.machine;
-            int completionTime = startTime + problem.TIME[job][machine];
+        for (Operation op : schedulable) {
+            int completionTime = op.getStartTime() + problem.TIME[op.job][op.machine];
             if (completionTime < min) {
                 min = completionTime;
             }
         }
         return min;
+    }
+
+    private ArrayList<Operation> buildConflicts() {
+        for (Operation op : schedulable) {
+            
+        }
     }
 }

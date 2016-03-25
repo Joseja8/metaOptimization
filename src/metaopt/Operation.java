@@ -12,7 +12,9 @@ package metaopt;
 public class Operation {
     public int job;
     public int machine;
-    int startTime;
+    private int startTime;
+    private int duration;
+    private int completionTime;
     
     public Operation() {
         this.job = -1;
@@ -28,6 +30,32 @@ public class Operation {
     
     @Override
     public String toString() {
-        return " (" + job + " , " + machine + " , " + startTime + ") ";
+        return " (" + job + " , " + machine + " , " + getStartTime() + ") ";
+    }
+
+    public int getStartTime() {
+        return startTime;
+    }
+
+    public void setStartTime(int startTime) {
+        this.startTime = startTime;
+        updateCompletionTime();
+    }
+
+    public int getDuration() {
+        return duration;
+    }
+
+    public void setDuration(int duration) {
+        this.duration = duration;
+        updateCompletionTime();
+    }
+
+    public int getCompletionTime() {
+        return completionTime;
+    }
+
+    public void updateCompletionTime() {
+        this.completionTime = this.startTime + this.duration;
     }
 }
