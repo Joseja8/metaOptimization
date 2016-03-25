@@ -18,6 +18,7 @@ public class AlgGT {
 
     Problem problem;
     int randomNumber;
+    int finalSolution;
     public ArrayList<Operation> schedulable;
     public ArrayList<Operation> notYetSchedulable;
     public ArrayList<Operation> scheduled;
@@ -27,9 +28,9 @@ public class AlgGT {
         this.problem = problem;
         this.randomNumber = randomNumber;
         this.schedulable = new ArrayList<>();
-        this.notYetSchedulable = new ArrayList<>();
         this.scheduled = new ArrayList<>();
         this.timeToIdle = new ArrayList<>();
+        this.finalSolution = 0;
     }
 
     public void compute() {
@@ -44,7 +45,9 @@ public class AlgGT {
             timeToIdle.set(scheduledOp.machine, scheduledOp.getCompletionTime());
             updateStartingTimes(scheduledOp);
             addSuccessors(scheduledOp);
-        }  // TODOscheduledOp.machine) = scheduledOp.getCompletionTime(): change to old while.
+        }
+        finalSolution = scheduled.get(scheduled.size()-1).getCompletionTime();
+        System.out.print("\n\n ##### END: " + scheduled.size() + " #####\n\n");
     }
 
     private void prepareAlgorithm() {
@@ -81,7 +84,7 @@ public class AlgGT {
     }
 
     private Operation chooseOpToSchedule(ArrayList<Operation> conflicts) {
-        int index = randomNumber % conflicts.size();  // Random pick (with seed).
+        int index = Math.abs(randomNumber % conflicts.size());  // Random pick (with seed).
         for (Operation op : schedulable) {
             if (conflicts.get(index).equals(op)) {
                 schedulable.remove(op);
