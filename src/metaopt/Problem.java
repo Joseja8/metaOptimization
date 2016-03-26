@@ -47,15 +47,13 @@ public class Problem {
             // Load operation's matrix.
             for (int i = 0; i < NUM_JOBS; i++) {
                 for (int j = 0; j < NUM_MACHINES; j++) {
-                    Operation aux = new Operation(i, j, in.nextInt());
-                    ops[i][j] = aux;
+                    ops[i][j] = new Operation(i, j, in.nextInt());
                 }
             }
-
             // Load technological order matrix.
             for (int i = 0; i < NUM_JOBS; i++) {
                 for (int j = 0; j < NUM_MACHINES; j++) {
-                    tech[i][j] = in.nextInt()-1;  // -1 because machines are 1-indexed.
+                    tech[i][j] = in.nextInt() - 1;  // -1 because machines are 1-indexed.
                     ops[i][j].machine = tech[i][j];
                 }
             }

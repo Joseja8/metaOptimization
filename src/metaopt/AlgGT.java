@@ -28,17 +28,19 @@ public class AlgGT {
         this.problem = problem;
         this.randomNumber = randomNumber;
         this.schedulable = new ArrayList<>();
+        this.notYetSchedulable = new ArrayList<>();
         this.scheduled = new ArrayList<>();
         this.timeToIdle = new ArrayList<>();
         this.finalSolution = 0;
     }
 
-    public void compute() {
+    public int compute() {
         prepareAlgorithm();
         while (!schedulable.isEmpty()) {
             Operation minOp = findMinCompletionTime();
-            ArrayList<Operation> conflicts = buildConflicts(minOp);
-            Operation scheduledOp = chooseOpToSchedule(conflicts);
+            buildConflicts(minOp);
+            Operation scheduledOp = chooseOpToSchedule();
+            removeScheduledOpFromSchedulable(scheduledOp);
             scheduled.add(scheduledOp);  // TODO: Update in Solution too.
             // Debug (show scheduled operation).
             //System.out.print(scheduledOp.toString());
@@ -46,8 +48,8 @@ public class AlgGT {
             updateStartingTimes(scheduledOp);
             addSuccessors(scheduledOp);
         }
-        finalSolution = scheduled.get(scheduled.size()-1).getCompletionTime();
-        System.out.print("\n\n ##### END: " + scheduled.size() + " #####\n\n");
+        calculateFinalSolution();
+        return finalSolution;
     }
 
     private void prepareAlgorithm() {
@@ -62,7 +64,7 @@ public class AlgGT {
     }
 
     private Operation findMinCompletionTime() {
-        Operation min = new Operation(-1, -1, 999999);
+        Operation min = new Operation(-1, -1, 99999);
         for (Operation op : schedulable) {
             if (op.getCompletionTime() < min.getCompletionTime()) {
                 min = op;
@@ -71,27 +73,20 @@ public class AlgGT {
         return min;
     }
 
-    private ArrayList<Operation> buildConflicts(Operation minOp) {
-        ArrayList<Operation> conflicts = new ArrayList<>();
+    private void buildConflicts(Operation minOp) {
         for (Operation op : schedulable) {
             boolean haveSameMachine = op.machine == minOp.machine;
             boolean canStartPrematurely = op.getStartTime() < minOp.getCompletionTime();
             if (haveSameMachine && canStartPrematurely) {
-                conflicts.add(op);
+                notYetSchedulable.add(op);  // TODO: Also remove from schedulable?
             }
         }
-        return conflicts;
+        return;
     }
 
-    private Operation chooseOpToSchedule(ArrayList<Operation> conflicts) {
-        int index = Math.abs(randomNumber % conflicts.size());  // Random pick (with seed).
-        for (Operation op : schedulable) {
-            if (conflicts.get(index).equals(op)) {
-                schedulable.remove(op);
-                return op;
-            }
-        }
-        return null;
+    private Operation chooseOpToSchedule() {
+        int index = Math.abs(randomNumber % notYetSchedulable.size());  // Random pick (with seed).
+        return notYetSchedulable.get(index);
     }
 
     private void updateStartingTimes(Operation scheduledOp) {
@@ -104,11 +99,30 @@ public class AlgGT {
     }
 
     private void addSuccessors(Operation scheduledOp) {
-        int nextTask = scheduledOp.machine + 1;  // TODO: asssert that is not modified.
+        int nextTask = scheduledOp.machine + 1;
         if (nextTask < problem.NUM_MACHINES) {
-            Operation nextOp = problem.OPS[scheduledOp.job][nextTask];
-            nextOp.setStartTime(Math.max(nextOp.getStartTime(), timeToIdle.get(scheduledOp.machine)));
-            schedulable.add(nextOp);
+            Operation successorOp = problem.OPS[scheduledOp.job][nextTask];
+            successorOp.setStartTime(Math.max(successorOp.getStartTime(), timeToIdle.get(scheduledOp.machine)));
+            schedulable.add(successorOp);
         }
+    }
+
+    private void removeScheduledOpFromSchedulable(Operation scheduledOp) {
+        for (Operation op : schedulable) {
+            if (op.equals(scheduledOp)) {
+                schedulable.remove(op);
+                return;
+            }
+        }
+    }
+
+    private void calculateFinalSolution() {
+        int max = 0;
+        for (Operation op : scheduled) {
+            if (op.getCompletionTime() > max) {
+                max = op.getCompletionTime();
+            }
+        }
+        finalSolution = max;
     }
 }
