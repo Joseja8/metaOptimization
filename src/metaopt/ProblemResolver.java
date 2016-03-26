@@ -5,6 +5,7 @@
  */
 package metaopt;
 
+import java.util.ArrayList;
 import java.util.Random;
 import metaopt.Menu.Algorithm;
 
@@ -28,20 +29,20 @@ public class ProblemResolver {
 
     public void resolveNTimes() {
         for (int i = 0; i < nIter; i++) {
-            resolve(i);
+            ArrayList solution = resolve(i);
         }
     }
 
-    private int resolve(int iteration) {
+    private ArrayList<Integer> resolve(int iteration) {
         switch (algorithm) {
             case GT:
                 AlgGT algorithmGT = new AlgGT(new Problem(file), rand.nextInt());
-                int solution = algorithmGT.compute();
+                ArrayList<Integer> solution = algorithmGT.compute();
                 // DEBUG (print solutions).
                 // System.out.print("\n ##### Solution "+ iteration + ": " + solution + "\n");
                 return solution;
             default:
-                return -1;
+                return null;
         }
     }
 }
