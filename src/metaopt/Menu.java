@@ -25,7 +25,7 @@ public class Menu {
     long seed;
 
     public Menu() {
-        file = "abz07.txt";
+        file = "la01.txt";
         algorithm = Algorithm.GT;
         numberOfIterations = 1;
         seed = 53599809;
@@ -211,8 +211,9 @@ public class Menu {
             }
             return;
         }
-        
+
         ProblemResolver problemResolver = new ProblemResolver(file, algorithm, numberOfIterations, seed);
+        problemResolver.resolveNTimes();
     }
 
 }
