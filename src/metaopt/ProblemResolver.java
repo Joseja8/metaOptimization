@@ -28,21 +28,23 @@ public class ProblemResolver {
     }
 
     public void resolveNTimes() {
+        int total = 0;
         for (int i = 0; i < nIter; i++) {
-            ArrayList solution = resolve(i);
+            total += resolve(i);
         }
     }
 
-    private ArrayList<Integer> resolve(int iteration) {
+    private int resolve(int iteration) {
         switch (algorithm) {
             case GT:
-                AlgGT algorithmGT = new AlgGT(new Problem(file), rand.nextInt());
-                ArrayList<Integer> solution = algorithmGT.compute();
+                Problem problem = new Problem(file);
+                AlgGT algorithmGT = new AlgGT(problem, rand.nextInt());
+                algorithmGT.compute();
                 // DEBUG (print solutions).
-                // System.out.print("\n ##### Solution "+ iteration + ": " + solution + "\n");
-                return solution;
+                //System.out.print("\n ##### Solution "+ iteration + ": " + problem.chromosome + "\n");
+                return problem.decodeChromosome(); //TODO: Problem should decode chromosome to give the MAX_SPAN (I hope so).
             default:
-                return null;
+                return 0;
         }
     }
 }

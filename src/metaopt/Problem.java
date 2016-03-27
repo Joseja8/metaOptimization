@@ -7,10 +7,10 @@ package metaopt;
 
 import java.io.FileNotFoundException;
 import java.io.FileReader;
+import java.util.ArrayList;
 import java.util.Scanner;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import metaopt.utils.ProblemUtils;
 
 /**
  *
@@ -24,11 +24,17 @@ public class Problem {
     public int[][] TECH;
     public Operation[][] OPS;
     public int[][] SOLUTION;
+    public ArrayList<Integer> chromosome;
 
     public Problem(String file) {
         loadData(file);
+        chromosome = null;
     }
 
+    public int decodeChromosome() {
+        return 0;  // TODO: metaPaper algorithm.
+    }
+    
     private void loadData(String file) {
         try {
             String PATH = "src/metaopt/resources/";
