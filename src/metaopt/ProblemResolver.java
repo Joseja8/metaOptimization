@@ -5,7 +5,6 @@
  */
 package metaopt;
 
-import java.util.ArrayList;
 import java.util.Random;
 import metaopt.Menu.Algorithm;
 

@@ -34,23 +34,29 @@ public class Problem {
     public int decodeChromosome() {
         ArrayList<Integer> startTimeJob = new ArrayList<>(NUM_JOBS);  // Counting-indexes for starting times (jobs).
         ArrayList<Integer> startTimeMachine = new ArrayList<>(NUM_JOBS);  // Counting-indexes for starting times (machines).
-        ArrayList<Integer> nextJob = new ArrayList<>(NUM_JOBS);  // Counting-indexes for solution matrix.
-        ArrayList<Integer> nextMachine = new ArrayList<>(NUM_JOBS);  // Counting-indexes for job's tasks
+        ArrayList<Integer> nextJobs = new ArrayList<>(NUM_MACHINES);  // Counting-indexes for solution matrix.
+        ArrayList<Integer> nextMachines = new ArrayList<>(NUM_MACHINES);  // Counting-indexes for job's tasks
         
         for (int i = 0; i < NUM_JOBS; i++) {
-            nextMachine.add(i, 1);
+            nextMachines.add(i, 1);
             startTimeJob.add(i, 0);
         }
         for (int j = 0; j < NUM_MACHINES; j++) {
-            nextJob.add(j, 0);
+            nextJobs.add(j, 1);
             startTimeMachine.add(j, 0);
         }
+            System.out.print("SIZE :" + chromosome.size() + "\n");
         for (int k = 0; k < chromosome.size(); k++) {
+            System.out.print("K :" + k + "\n");
             int i = chromosome.get(k);  // Job.
-            int j = nextMachine.get(i);  // Machine.
-            SOLUTION[j][nextJob.get(j)] = i;
-            nextMachine.set(i, i+1);  // FIXME: Dangerous
-            nextJob.set(j, j+1);  // FIXME: Dangerous
+            int j = nextMachines.get(i);  // TODO: Use OPS
+            SOLUTION[j][nextJobs.get(j)] = i;
+            // Conflict zone.
+            int nextMachine = OPS[i][j+1].machine;
+            int nextJob = OPS[i][j+1].machine;
+            
+            nextMachines.set(i, OPS[i][j+1].machine);
+            nextJobs.set(j, OPS[i][j+1].job);  // FIXME: Dangerous
             int start = Math.max(startTimeJob.get(i), startTimeMachine.get(j));
             System.out.print("TIME :" + start + "\n");
             startTimeJob.set(i, start+OPS[i][j].getDuration());
