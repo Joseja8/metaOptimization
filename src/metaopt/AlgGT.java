@@ -5,10 +5,7 @@
  */
 package metaopt;
 
-import java.util.AbstractList;
 import java.util.ArrayList;
-import java.util.List;
-import jdk.nashorn.internal.objects.Global;
 
 /**
  *
@@ -57,8 +54,6 @@ public class AlgGT {
             updateStartingTimes(scheduledOp);
             addSuccessors(scheduledOp);
         }
-        // DEBUG: Print MAX_SPAN
-        //System.out.print("MAX_SPAN: " + scheduled.get(scheduled.size() - 1).getCompletionTime() + "\n");
         codifySolution();
     }
 

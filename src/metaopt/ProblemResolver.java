@@ -5,7 +5,6 @@
  */
 package metaopt;
 
-import java.util.ArrayList;
 import java.util.Random;
 import metaopt.Menu.Algorithm;
 
@@ -20,18 +19,21 @@ public class ProblemResolver {
     int nIter;
     Random rand;
 
-    public ProblemResolver(String file, Menu.Algorithm algorithm, int numberOfIterations, long seed) {
+    public ProblemResolver(String file, Menu.Algorithm algorithm,
+                           int numberOfIterations, long seed) {
         this.file = file;
         this.algorithm = algorithm;
         this.nIter = numberOfIterations;
         this.rand = new Random(seed);
     }
 
-    public void resolveNTimes() {
+    public void resolveNTimes() {  // TODO: Separate useful data from resolve loop.
         int total = 0;
         for (int i = 0; i < nIter; i++) {
             total += resolve(i);
         }
+        int averageMaxSpan = total / nIter;
+        System.out.print("Average MAX_SPAN: " + averageMaxSpan + "\n");
     }
 
     private int resolve(int iteration) {
