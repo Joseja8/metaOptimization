@@ -11,8 +11,11 @@ import java.util.ArrayList;
 import java.util.Scanner;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import metaopt.utils.ProblemUtils;
 
 /**
+ * Contains problem domain information and a method to obtain the MAX_SPAN of a
+ * chromosome.
  *
  * @author joseja
  */
@@ -21,7 +24,6 @@ public class Problem {
     public int NUM_JOBS;
     public int NUM_MACHINES;
     public int BEST_MAKESPAN;
-    public int[][] TECH;
     public Operation[][] OPS;
     public int[][] SOLUTION;
     public ArrayList<Integer> chromosome;
@@ -29,12 +31,61 @@ public class Problem {
     public Problem(String file) {
         loadData(file);
         chromosome = null;
+        SOLUTION = new int[NUM_MACHINES][NUM_JOBS];
     }
 
+    /**
+     * Transforms the chromosome into a MAX_SPAN value.
+     * Based on the evaluation algorithm of Christian Bierwirth.
+     * Active schedule is not conserved (left-shifting would be needed).
+     *
+     * @return MAX_SPAN total time to complete all jobs.
+     */
     public int decodeChromosome() {
-        return 0;  // TODO: metaPaper algorithm.
+        ArrayList<Integer> startTimeJob = new ArrayList<>(NUM_JOBS);
+        ArrayList<Integer> startTimeMachine = new ArrayList<>(NUM_MACHINES);
+        ArrayList<Integer> nextJobs = new ArrayList<>(NUM_MACHINES);  // Jobs counting-index.
+        ArrayList<Integer> nextMachines = new ArrayList<>(NUM_JOBS);  // Machines counting-index.
+
+        for (int i = 0; i < NUM_JOBS; i++) {
+            nextMachines.add(i, 0);
+            startTimeJob.add(i, 0);
+        }
+        for (int j = 0; j < NUM_MACHINES; j++) {
+            nextJobs.add(j, 0);
+            startTimeMachine.add(j, 0);
+        }
+
+        // Operation sequencing.
+        int MAX_SPAN = -1;
+        for (int k = 0; k < chromosome.size(); k++) {
+            int i = chromosome.get(k);  // Job.
+            int j = OPS[i][nextMachines.get(i)].machine;  // Machine.
+
+            SOLUTION[j][nextJobs.get(j)] = i;  // Build symbolic solution.
+
+            printSolution(false);  // Print solution matrix (for debugging purposes).
+
+            // Semi-active scheduling.
+            int start = Math.max(startTimeJob.get(i), startTimeMachine.get(j));
+            startTimeJob.set(i, start + OPS[i][nextMachines.get(i)].getDuration());
+            startTimeMachine.set(j, start + OPS[i][nextMachines.get(i)].getDuration());
+            MAX_SPAN = startTimeJob.get(i);
+
+            // Update counting-indexes.
+            int nextMachineIndex = nextMachines.get(i) + 1;
+            nextMachines.set(i, nextMachineIndex);
+            int nextJobIndex = nextJobs.get(j) + 1;
+            nextJobs.set(j, nextJobIndex);
+        }
+        return MAX_SPAN;
     }
-    
+
+    /**
+     * Load text file data into the class attributes.
+     *
+     * @param file File to be loaded.
+     */
     private void loadData(String file) {
         try {
             String PATH = "src/metaopt/resources/";
@@ -46,35 +97,32 @@ public class Problem {
             NUM_MACHINES = in.nextInt();
             BEST_MAKESPAN = in.nextInt();
 
-            int[][] tech = new int[NUM_JOBS][NUM_MACHINES];
-            Operation[][] ops = new Operation[NUM_JOBS][NUM_MACHINES];
-            int[][] solution = new int[NUM_MACHINES][NUM_JOBS];
-
-            // Load operation's matrix.
+            Operation[][] auxOPS = new Operation[NUM_JOBS][NUM_MACHINES];
+            // Load jobs and times into OPS.
             for (int i = 0; i < NUM_JOBS; i++) {
                 for (int j = 0; j < NUM_MACHINES; j++) {
-                    ops[i][j] = new Operation(i, j, in.nextInt());
+                    auxOPS[i][j] = new Operation(i, j, in.nextInt());
                 }
             }
-            // Load technological order matrix.
+            // Update machines of OPS.
             for (int i = 0; i < NUM_JOBS; i++) {
                 for (int j = 0; j < NUM_MACHINES; j++) {
-                    tech[i][j] = in.nextInt() - 1;  // -1 because machines are 1-indexed.
-                    ops[i][j].machine = tech[i][j];
+                    auxOPS[i][j].machine = in.nextInt() - 1;  // -1 because machines are 1-indexed.
                 }
             }
 
-            // Fill problem matrices with data.
-            OPS = ops;
-            TECH = tech;
-            SOLUTION = solution;
+            // Update OPS.
+            OPS = auxOPS;
 
-            // DEBUG (print matrices).
-            //ProblemUtils.printMatrix(NUM_JOBS, NUM_MACHINES, OPS, TECH);
-            //ProblemUtils.printMatrix(NUM_MACHINES, NUM_JOBS, SOLUTION);
         } catch (FileNotFoundException ex) {
             Logger.getLogger(Problem.class.getName()).log(Level.SEVERE, null, ex);
         }
 
+    }
+
+    private void printSolution(boolean print) {
+        if (print) {
+            ProblemUtils.printMatrix(NUM_MACHINES, NUM_JOBS, SOLUTION);
+        }
     }
 }
