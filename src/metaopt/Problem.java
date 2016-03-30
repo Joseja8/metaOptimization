@@ -32,41 +32,52 @@ public class Problem {
     }
 
     public int decodeChromosome() {
-        ArrayList<Integer> startTimeJob = new ArrayList<>(NUM_JOBS);  // Counting-indexes for starting times (jobs).
-        ArrayList<Integer> startTimeMachine = new ArrayList<>(NUM_JOBS);  // Counting-indexes for starting times (machines).
-        ArrayList<Integer> nextJobs = new ArrayList<>(NUM_MACHINES);  // Counting-indexes for solution matrix.
-        ArrayList<Integer> nextMachines = new ArrayList<>(NUM_MACHINES);  // Counting-indexes for job's tasks
-        
+        ArrayList<Integer> startTimeJob = new ArrayList<>(NUM_JOBS);
+        ArrayList<Integer> startTimeMachine = new ArrayList<>(NUM_MACHINES);
+        ArrayList<Integer> nextJobs = new ArrayList<>(NUM_MACHINES);
+        ArrayList<Integer> nextMachines = new ArrayList<>(NUM_JOBS);
+
         for (int i = 0; i < NUM_JOBS; i++) {
-            nextMachines.add(i, 1);
+            nextMachines.add(i, 0);  // OPS column index.
             startTimeJob.add(i, 0);
         }
         for (int j = 0; j < NUM_MACHINES; j++) {
-            nextJobs.add(j, 1);
+            nextJobs.add(j, 0);  // OPS row index.
             startTimeMachine.add(j, 0);
         }
-            System.out.print("SIZE :" + chromosome.size() + "\n");
+
+        System.out.print("Chromosome :" + chromosome + "\n");
+
         for (int k = 0; k < chromosome.size(); k++) {
-            System.out.print("K :" + k + "\n");
+            System.out.print("ITERATION :" + k + "\n");
             int i = chromosome.get(k);  // Job.
-            int j = nextMachines.get(i);  // TODO: Use OPS
-            SOLUTION[j][nextJobs.get(j)] = i;
-            // Conflict zone.
-            int nextMachine = OPS[i][j+1].machine;
-            int nextJob = OPS[i][j+1].machine;
+            int j = nextMachines.get(i);  // Machine.
+
+            SOLUTION[OPS[i][j].machine][j] = i;
+
+            for (int n = 0; n < NUM_MACHINES; n++) {
+                for (int m = 0; m < NUM_JOBS; m++) {
+                    System.out.print(SOLUTION[n][m] + " ");
+                }
+                System.out.print("\n");
+            }
+
+            int nextMachineIndex = nextMachines.get(i) + 1;
+            nextMachines.set(i, nextMachineIndex);
+            int nextJobIndex = nextJobs.get(j) + 1;
             
-            nextMachines.set(i, OPS[i][j+1].machine);
-            nextJobs.set(j, OPS[i][j+1].job);  // FIXME: Dangerous
+            nextJobs.set(j, nextJobIndex);
+
             int start = Math.max(startTimeJob.get(i), startTimeMachine.get(j));
             System.out.print("TIME :" + start + "\n");
-            startTimeJob.set(i, start+OPS[i][j].getDuration());
-            startTimeMachine.set(j, start+OPS[i][j].getDuration());
-            
+            startTimeJob.set(i, start + OPS[i][j].getDuration());
+            startTimeMachine.set(j, start + OPS[i][j].getDuration());
+
         }
-        
+
         return 0;  // TODO: metaPaper algorithm.
     }
-    
+
     private void loadData(String file) {
         try {
             String PATH = "src/metaopt/resources/";
