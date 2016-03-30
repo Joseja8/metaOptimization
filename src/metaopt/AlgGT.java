@@ -54,8 +54,6 @@ public class AlgGT {
             updateStartingTimes(scheduledOp);
             addSuccessors(scheduledOp);
         }
-        // DEBUG: Print MAX_SPAN
-        System.out.print("MAX_SPAN: " + scheduled.get(scheduled.size() - 1).getCompletionTime() + "\n");
         codifySolution();
     }
 
