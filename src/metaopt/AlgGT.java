@@ -13,7 +13,6 @@ import java.util.ArrayList;
  */
 public class AlgGT {
 
-    Problem problem; 
     int rand;
     public ArrayList<Operation> schedulable;
     public ArrayList<Operation> notYetSchedulable;
@@ -28,7 +27,7 @@ public class AlgGT {
         this.timeToIdle = new ArrayList<>();
     }
 
-    private void prepareAlgorithm() {
+    private void prepareAlgorithm(Problem problem) {
         // Init schedulable ops.
         for (int i = 0; i < problem.NUM_JOBS; i++) {
             schedulable.add(problem.OPS[i][0]);
@@ -40,8 +39,7 @@ public class AlgGT {
     }
 
     public void generateSolution(Problem problem) {
-        this.problem = problem;
-        prepareAlgorithm();
+        prepareAlgorithm(problem);
         while (!schedulable.isEmpty()) {
             Operation minOp = findMinCompletionTime();
             buildConflicts(minOp);
@@ -50,7 +48,7 @@ public class AlgGT {
             scheduled.add(scheduledOp);
             timeToIdle.set(scheduledOp.machine, scheduledOp.getCompletionTime());
             updateStartingTimes(scheduledOp);
-            addSuccessors(scheduledOp);
+            addSuccessors(problem, scheduledOp);
         }
         codifySolution(problem);
     }
@@ -92,7 +90,7 @@ public class AlgGT {
         }
     }
 
-    private void addSuccessors(Operation scheduledOp) { // MAACHINE != INDEX!!
+    private void addSuccessors(Problem problem, Operation scheduledOp) { // MAACHINE != INDEX!!
         int nextTask = -1;
         for (int i = 0; i < problem.OPS.length; i++) {
             for (int j = 0; j < problem.OPS[i].length; j++) {

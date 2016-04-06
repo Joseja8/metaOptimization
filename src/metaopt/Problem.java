@@ -8,7 +8,6 @@ package metaopt;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Scanner;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -22,6 +21,7 @@ import java.util.logging.Logger;
  */
 public class Problem {
 
+    public String file;
     public int NUM_JOBS;
     public int NUM_MACHINES;
     public int BEST_MAKESPAN;
@@ -31,27 +31,29 @@ public class Problem {
     public ArrayList<Integer> chromosome;
 
     public Problem(String file) {
+        this.file = file;
         loadData(file);
         chromosome = null;
         SOLUTION = new int[NUM_MACHINES][NUM_JOBS];
         MAKESPAN = -1;
     }
 
-    Problem(Problem problem) {
+    public Problem(Problem problem) {
+        this.file = problem.file;
+        loadData(file);
+        SOLUTION = new int[NUM_MACHINES][NUM_JOBS];
         this.NUM_JOBS = problem.NUM_JOBS;
         this.NUM_MACHINES = problem.NUM_MACHINES;
         this.BEST_MAKESPAN = problem.BEST_MAKESPAN;
         // Copy OPS matrix.
-        for (int i = 0; i < this.OPS.length; i++) {
-            for (int j = 0; j < this.OPS[i].length; j++) {
-                this.OPS[i][j] = problem.OPS[i][j];
+        for (int i = 0; i < this.NUM_JOBS; i++) {
+            for (int j = 0; j < this.NUM_MACHINES; j++) {
+                this.OPS[i][j] = new Operation(problem.OPS[i][j]);
             }
         }
         // Copy solution matrix.
-        for (int i = 0; i < this.SOLUTION.length; i++) {
-            for (int j = 0; j < this.SOLUTION[i].length; j++) {
-                this.SOLUTION[i][j] = problem.SOLUTION[i][j];
-            }
+        for (int i = 0; i < this.NUM_MACHINES; i++) {
+            System.arraycopy(problem.SOLUTION[i], 0, this.SOLUTION[i], 0, this.NUM_JOBS);
         }
         this.MAKESPAN = problem.MAKESPAN;
         this.chromosome = new ArrayList<>(problem.chromosome);
@@ -97,20 +99,6 @@ public class Problem {
         }
         return this.MAKESPAN;
     }
-
-    /**
-     *
-     * @return
-     */
-    public Problem generateNeighbor(int rand) {
-        Problem neighbor = new Problem(this);
-        ArrayList newChromosome = new ArrayList(neighbor.chromosome);
-        int size = newChromosome.size();
-        int pos1 = rand % size;
-        int pos2 = size - pos1;
-        Collections.swap(newChromosome, pos1, pos2);  // Mutation.
-        return neighbor;
-    }
     
     public boolean isBetterThan(Problem problem) {
         return this.decodeChromosome() < problem.decodeChromosome();
@@ -124,6 +112,18 @@ public class Problem {
         for (int i = 0; i < NUM_MACHINES; i++) {
             for (int j = 0; j < NUM_JOBS; j++) {
                 System.out.print(SOLUTION[i][j] + " ");
+            }
+            System.out.println();
+        }
+    }
+    /**
+     * Print the operations matrix for debugging purposes.
+     */
+    public void printOps() {
+        System.out.println("Operations: ");
+        for (int i = 0; i < NUM_JOBS; i++) {
+            for (int j = 0; j < NUM_MACHINES; j++) {
+                System.out.print(OPS[i][j] + " ");
             }
             System.out.println();
         }

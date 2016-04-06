@@ -35,6 +35,7 @@ public class Operation {
         this.machine = machine;
         this.startTime = 0;
         this.duration = duration;
+        this.completionTime = 0;
         updateCompletionTime();
     }
 
