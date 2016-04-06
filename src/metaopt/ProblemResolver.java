@@ -47,8 +47,12 @@ public class ProblemResolver {
                 return maxSpan;
             case BL:
                 AlgBL algorithmBL = new AlgBL(rand);
-                algorithmBL.generateSolution(problem);
-                maxSpan = problem.decodeChromosome();
+                Problem solution = algorithmBL.generateSolution(problem);
+                if (solution == null) {
+                    System.out.println("La busqueda local no produjo ningun resultado");
+                    return -1;
+                }
+                maxSpan = solution.decodeChromosome();
                 return maxSpan;
             default:
                 return 0;

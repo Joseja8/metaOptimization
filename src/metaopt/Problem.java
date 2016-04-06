@@ -102,13 +102,18 @@ public class Problem {
      *
      * @return
      */
-    public ArrayList<Integer> generateNeigborhood(int rand) {
-        ArrayList neighbor = new ArrayList(chromosome);
-        int size = neighbor.size();
+    public Problem generateNeighbor(int rand) {
+        Problem neighbor = new Problem(this);
+        ArrayList newChromosome = new ArrayList(neighbor.chromosome);
+        int size = newChromosome.size();
         int pos1 = rand % size;
         int pos2 = size - pos1;
-        Collections.swap(neighbor, pos1, pos2);  // Mutation.
+        Collections.swap(newChromosome, pos1, pos2);  // Mutation.
         return neighbor;
+    }
+    
+    public boolean isBetterThan(Problem problem) {
+        return this.decodeChromosome() < problem.decodeChromosome();
     }
 
     /**

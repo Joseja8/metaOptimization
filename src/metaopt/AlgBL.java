@@ -5,7 +5,6 @@
  */
 package metaopt;
 
-import java.util.ArrayList;
 import java.util.Random;
 
 /**
@@ -15,18 +14,44 @@ import java.util.Random;
 class AlgBL {
 
     Random rand;
+    final int MAX_ITER = 1000;
 
     public AlgBL(Random rand) {
         this.rand = rand;
     }
 
-    public void generateSolution(Problem problem) {  // TODO: Revise randomFuck.
+    public Problem generateSolution(Problem problem) {  // TODO: Revise randomFuck.
+        // Generate initial solution.
         AlgGT algorithmGT = new AlgGT(rand.nextInt());
         algorithmGT.generateSolution(problem);
-        Problem bestNeighbor = new Problem(problem);
+        // Initialize variables.
+        Problem previus = problem;
+        Problem actual = problem;
+        Problem neighbor = null;
+        Problem bestNeighbor = problem;
         do {
-            ArrayList<Integer> newNeighbor = problem.generateNeigborhood(rand.nextInt());
-        } while (true);
+            // Generate neighbors.
+            neighbor = generateBetterNeighbor(actual, bestNeighbor);
+            if (neighbor == null) {
+                return null;
+            }
+            previus = actual;
+            if (neighbor.isBetterThan(actual)) {
+                actual = neighbor;
+            }
+        } while (neighbor.isBetterThan(previus));
+        return actual;
+    }
+
+    private Problem generateBetterNeighbor(Problem actual, Problem bestNeighbor) {
+        Problem newNeighbor = null;
+        for (int i = 0; i < MAX_ITER; i++) {
+            newNeighbor = actual.generateNeighbor(rand.nextInt());
+            if (newNeighbor.isBetterThan(bestNeighbor)) {
+                bestNeighbor = newNeighbor;
+            }
+        }
+        return newNeighbor;
     }
 
 }
