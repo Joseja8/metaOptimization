@@ -5,7 +5,6 @@
  */
 package metaopt;
 
-import java.util.Collections;
 import java.util.Random;
 import metaopt.Menu.Algorithm;
 
@@ -38,18 +37,18 @@ public class ProblemResolver {
     }
 
     private int resolve() {
+                Problem problem = new Problem(file);
+                int maxSpan = -1;
         switch (algorithm) {
             case GT:
-                Problem problem = new Problem(file);
-                AlgGT algorithmGT = new AlgGT(problem, rand.nextInt());
-                algorithmGT.generateSolution();
-                problem.printChromosome();
-                int maxSpan = problem.decodeChromosome();
-                System.out.print("MAX_SPAN1: " + maxSpan + "\n");
-                Collections.shuffle(problem.chromosome);
+                AlgGT algorithmGT = new AlgGT(rand.nextInt());
+                algorithmGT.generateSolution(problem);
                 maxSpan = problem.decodeChromosome();
-                System.out.print("MAX_SPAN2: " + maxSpan + "\n");
-                problem.printSolution();
+                return maxSpan;
+            case BL:
+                AlgBL algorithmBL = new AlgBL(rand);
+                algorithmBL.generateSolution(problem);
+                maxSpan = problem.decodeChromosome();
                 return maxSpan;
             default:
                 return 0;

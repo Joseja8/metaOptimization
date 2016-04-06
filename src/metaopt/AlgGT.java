@@ -13,16 +13,15 @@ import java.util.ArrayList;
  */
 public class AlgGT {
 
-    Problem problem;
-    int randomNumber;
+    Problem problem; 
+    int rand;
     public ArrayList<Operation> schedulable;
     public ArrayList<Operation> notYetSchedulable;
     public ArrayList<Operation> scheduled;
     public ArrayList<Integer> timeToIdle;
 
-    AlgGT(Problem problem, int randomNumber) {
-        this.problem = problem;
-        this.randomNumber = randomNumber;
+    AlgGT(int rand) {
+        this.rand = rand;
         this.schedulable = new ArrayList<>();
         this.notYetSchedulable = new ArrayList<>();
         this.scheduled = new ArrayList<>();
@@ -40,7 +39,8 @@ public class AlgGT {
         }
     }
 
-    public void generateSolution() {
+    public void generateSolution(Problem problem) {
+        this.problem = problem;
         prepareAlgorithm();
         while (!schedulable.isEmpty()) {
             Operation minOp = findMinCompletionTime();
@@ -48,25 +48,11 @@ public class AlgGT {
             Operation scheduledOp = chooseOpToSchedule();
             removeScheduledOpFromSchedulable(scheduledOp);
             scheduled.add(scheduledOp);
-            // Debug (show scheduled operation).
-            //System.out.print(scheduledOp.toString());
             timeToIdle.set(scheduledOp.machine, scheduledOp.getCompletionTime());
             updateStartingTimes(scheduledOp);
             addSuccessors(scheduledOp);
         }
-        updateMaxSpan();
-        codifySolution();
-    }
-
-    private void updateMaxSpan() {
-        int auxMaxSpan = -1;
-        for (Operation op : scheduled) {
-            if (auxMaxSpan < op.getCompletionTime()) {
-                auxMaxSpan = op.getCompletionTime();
-            }
-        }
-        System.out.print("MAX_SPAN: " + auxMaxSpan + "\n");
-        problem.MAXSPAN = auxMaxSpan;
+        codifySolution(problem);
     }
 
     private Operation findMinCompletionTime() {
@@ -91,7 +77,7 @@ public class AlgGT {
     }
 
     private Operation chooseOpToSchedule() {
-        int index = Math.abs(randomNumber % notYetSchedulable.size());  // Random pick (with seed).
+        int index = Math.abs(rand % notYetSchedulable.size());  // Random pick (with seed).
         Operation choosedOp = notYetSchedulable.get(index);
         notYetSchedulable.clear();
         return choosedOp;
@@ -131,7 +117,7 @@ public class AlgGT {
         }
     }
 
-    private void codifySolution() {
+    private void codifySolution(Problem problem) {
         ArrayList<Integer> chromosome = new ArrayList<>();
         for (Operation op : scheduled) {
             chromosome.add(op.job);

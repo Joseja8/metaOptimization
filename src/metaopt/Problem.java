@@ -8,6 +8,7 @@ package metaopt;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Scanner;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -23,17 +24,37 @@ public class Problem {
 
     public int NUM_JOBS;
     public int NUM_MACHINES;
-    public int BEST_MAKSPAN;
+    public int BEST_MAKESPAN;
     public Operation[][] OPS;
     public int[][] SOLUTION;
-    public int MAXSPAN;
+    public int MAKESPAN;
     public ArrayList<Integer> chromosome;
 
     public Problem(String file) {
         loadData(file);
         chromosome = null;
         SOLUTION = new int[NUM_MACHINES][NUM_JOBS];
-        MAXSPAN = -1;
+        MAKESPAN = -1;
+    }
+
+    Problem(Problem problem) {
+        this.NUM_JOBS = problem.NUM_JOBS;
+        this.NUM_MACHINES = problem.NUM_MACHINES;
+        this.BEST_MAKESPAN = problem.BEST_MAKESPAN;
+        // Copy OPS matrix.
+        for (int i = 0; i < this.OPS.length; i++) {
+            for (int j = 0; j < this.OPS[i].length; j++) {
+                this.OPS[i][j] = problem.OPS[i][j];
+            }
+        }
+        // Copy solution matrix.
+        for (int i = 0; i < this.SOLUTION.length; i++) {
+            for (int j = 0; j < this.SOLUTION[i].length; j++) {
+                this.SOLUTION[i][j] = problem.SOLUTION[i][j];
+            }
+        }
+        this.MAKESPAN = problem.MAKESPAN;
+        this.chromosome = new ArrayList<>(problem.chromosome);
     }
 
     /**
@@ -57,7 +78,6 @@ public class Problem {
             startTimeMachine.add(j, 0);
         }
         // Operation sequencing.
-        int auxMaxSpan = -1;
         for (int k = 0; k < chromosome.size(); k++) {
             int i = chromosome.get(k);  // Job.
             int j = OPS[i][nextMachines.get(i)].machine;  // Machine.
@@ -67,15 +87,28 @@ public class Problem {
             int start = Math.max(startTimeJob.get(i), startTimeMachine.get(j));
             startTimeJob.set(i, start + OPS[i][nextMachines.get(i)].getDuration());
             startTimeMachine.set(j, start + OPS[i][nextMachines.get(i)].getDuration());
-            auxMaxSpan = startTimeJob.get(i);
+            int completionTime = Math.max(startTimeJob.get(i), startTimeMachine.get(j));
+            updateMaxSpan(completionTime);
             // Update counting-indexes.
             int nextMachineIndex = nextMachines.get(i) + 1;
             nextMachines.set(i, nextMachineIndex);
             int nextJobIndex = nextJobs.get(j) + 1;
             nextJobs.set(j, nextJobIndex);
         }
-        this.MAXSPAN = auxMaxSpan;
-        return auxMaxSpan;
+        return this.MAKESPAN;
+    }
+
+    /**
+     *
+     * @return
+     */
+    public ArrayList<Integer> generateNeigborhood(int rand) {
+        ArrayList neighbor = new ArrayList(chromosome);
+        int size = neighbor.size();
+        int pos1 = rand % size;
+        int pos2 = size - pos1;
+        Collections.swap(neighbor, pos1, pos2);  // Mutation.
+        return neighbor;
     }
 
     /**
@@ -89,9 +122,8 @@ public class Problem {
             }
             System.out.println();
         }
-        System.out.println();
     }
-    
+
     /**
      * Print the chromosome for debugging purposes.
      */
@@ -99,12 +131,16 @@ public class Problem {
         if (chromosome != null) {
             System.out.println("Chromosome: ");
             System.out.println(chromosome);
-            System.out.println();
         } else {
             System.out.println("PROBLEM_NOT_DECODED");
-            System.out.println();
         }
-       
+
+    }
+
+    private void updateMaxSpan(int completionTime) {
+        if (MAKESPAN < completionTime) {
+            MAKESPAN = completionTime;
+        }
     }
 
     /**
@@ -121,7 +157,7 @@ public class Problem {
 
             NUM_JOBS = in.nextInt();
             NUM_MACHINES = in.nextInt();
-            BEST_MAKSPAN = in.nextInt();
+            BEST_MAKESPAN = in.nextInt();
 
             Operation[][] auxOPS = new Operation[NUM_JOBS][NUM_MACHINES];
             // Load jobs and times into OPS.

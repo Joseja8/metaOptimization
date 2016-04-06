@@ -38,12 +38,20 @@ public class Operation {
         updateCompletionTime();
     }
 
+    public Operation(Operation operation) {
+        this.job = operation.job;
+        this.machine = operation.machine;
+        this.startTime = operation.startTime;
+        this.duration = operation.duration;
+        this.completionTime = operation.completionTime;
+    }
+
     @Override
     public String toString() {
         return "Op: (" + job + " , " + machine + ") " + "\n"
-                + "StartT: " + startTime + "\n"
-                + "Duration: " + duration + "\n"
-                + "CompletionT: " + completionTime + "\n\n";
+               + "StartT: " + startTime + "\n"
+               + "Duration: " + duration + "\n"
+               + "CompletionT: " + completionTime + "\n\n";
     }
 
     @Override
@@ -52,7 +60,7 @@ public class Operation {
             return false;
         } else if (op == this) {
             return true;
-        } else if (((Operation) op).machine == this.machine && ((Operation) op).job == this.job) {
+        } else if (((Operation)op).machine == this.machine && ((Operation)op).job == this.job) {
             return true;
         } else {
             return false;
