@@ -25,7 +25,7 @@ public class Menu {
     long seed;
 
     public Menu() {
-        file = "la01.txt";
+        file = "test.txt";
         algorithm = Algorithm.GT;
         numberOfIterations = 1;
         seed = 53599809;

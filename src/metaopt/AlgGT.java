@@ -40,21 +40,33 @@ public class AlgGT {
         }
     }
 
-    public void compute() {
+    public void generateSolution() {
         prepareAlgorithm();
         while (!schedulable.isEmpty()) {
             Operation minOp = findMinCompletionTime();
             buildConflicts(minOp);
             Operation scheduledOp = chooseOpToSchedule();
             removeScheduledOpFromSchedulable(scheduledOp);
-            scheduled.add(scheduledOp);  // TODO: Update in Solution too?
+            scheduled.add(scheduledOp);
             // Debug (show scheduled operation).
             //System.out.print(scheduledOp.toString());
             timeToIdle.set(scheduledOp.machine, scheduledOp.getCompletionTime());
             updateStartingTimes(scheduledOp);
             addSuccessors(scheduledOp);
         }
+        updateMaxSpan();
         codifySolution();
+    }
+
+    private void updateMaxSpan() {
+        int auxMaxSpan = -1;
+        for (Operation op : scheduled) {
+            if (auxMaxSpan < op.getCompletionTime()) {
+                auxMaxSpan = op.getCompletionTime();
+            }
+        }
+        System.out.print("MAX_SPAN: " + auxMaxSpan + "\n");
+        problem.MAXSPAN = auxMaxSpan;
     }
 
     private Operation findMinCompletionTime() {
