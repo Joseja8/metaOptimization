@@ -34,13 +34,11 @@ public class ProblemUtils {
      * @param rand
      * @return
      */
-    public static Problem generateNeighbor(Problem problem, int rand) {
+    public static Problem generateNeighbor(Problem problem) {
         Problem neighbor = new Problem(problem);
         ArrayList newChromosome = new ArrayList(neighbor.chromosome);
-        int size = newChromosome.size()-1;
-        int pos1 = Math.abs(rand % size);
-        int pos2 = Math.abs(size - pos1);
-        Collections.swap(newChromosome, pos1, pos2);  // Mutation.
+        Collections.shuffle(newChromosome);  // TODO: Random for now D:
+        neighbor.chromosome = new ArrayList<>(newChromosome);
         return neighbor;
     }
 

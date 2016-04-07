@@ -13,14 +13,14 @@ import java.util.ArrayList;
  */
 public class AlgGT {
 
-    int rand;
-    public ArrayList<Operation> schedulable;
-    public ArrayList<Operation> notYetSchedulable;
-    public ArrayList<Operation> scheduled;
-    public ArrayList<Integer> timeToIdle;
+    private final int randomNumber;
+    private ArrayList<Operation> schedulable;
+    private ArrayList<Operation> notYetSchedulable;
+    private ArrayList<Operation> scheduled;
+    private ArrayList<Integer> timeToIdle;
 
-    AlgGT(int rand) {
-        this.rand = rand;
+    AlgGT(int randomNumber) {
+        this.randomNumber = randomNumber;
         this.schedulable = new ArrayList<>();
         this.notYetSchedulable = new ArrayList<>();
         this.scheduled = new ArrayList<>();
@@ -75,7 +75,7 @@ public class AlgGT {
     }
 
     private Operation chooseOpToSchedule() {
-        int index = Math.abs(rand % notYetSchedulable.size());  // Random pick (with seed).
+        int index = Math.abs(randomNumber % notYetSchedulable.size());  // Random pick (with seed).
         Operation choosedOp = notYetSchedulable.get(index);
         notYetSchedulable.clear();
         return choosedOp;
@@ -92,9 +92,9 @@ public class AlgGT {
 
     private void addSuccessors(Problem problem, Operation scheduledOp) { // MAACHINE != INDEX!!
         int nextTask = -1;
-        for (int i = 0; i < problem.OPS.length; i++) {
-            for (int j = 0; j < problem.OPS[i].length; j++) {
-                if (problem.OPS[i][j].equals(scheduledOp)) {
+        for (Operation[] OPS : problem.OPS) {
+            for (int j = 0; j < OPS.length; j++) {
+                if (OPS[j].equals(scheduledOp)) {
                     nextTask = j + 1;
                 }
             }
@@ -117,9 +117,9 @@ public class AlgGT {
 
     private void codifySolution(Problem problem) {
         ArrayList<Integer> chromosome = new ArrayList<>();
-        for (Operation op : scheduled) {
+        scheduled.stream().forEach((op) -> {
             chromosome.add(op.job);
-        }
-        problem.chromosome = chromosome;
+        });
+        problem.chromosome = new ArrayList<>(chromosome);
     }
 }
