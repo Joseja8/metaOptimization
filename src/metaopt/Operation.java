@@ -21,6 +21,8 @@ public class Operation {
         this.job = -1;
         this.machine = -1;
         this.startTime = 0;
+        this.duration = 0;
+        updateCompletionTime();
     }
 
     public Operation(int job, int machine) {
@@ -28,6 +30,7 @@ public class Operation {
         this.machine = machine;
         this.startTime = 0;
         this.duration = 0;
+        updateCompletionTime();
     }
 
     public Operation(int job, int machine, int duration) {
@@ -35,15 +38,24 @@ public class Operation {
         this.machine = machine;
         this.startTime = 0;
         this.duration = duration;
+        this.completionTime = 0;
         updateCompletionTime();
+    }
+
+    public Operation(Operation operation) {
+        this.job = operation.job;
+        this.machine = operation.machine;
+        this.startTime = operation.startTime;
+        this.duration = operation.duration;
+        this.completionTime = operation.completionTime;
     }
 
     @Override
     public String toString() {
         return "Op: (" + job + " , " + machine + ") " + "\n"
-                + "StartT: " + startTime + "\n"
-                + "Duration: " + duration + "\n"
-                + "CompletionT: " + completionTime + "\n\n";
+               + "StartT: " + startTime + "\n"
+               + "Duration: " + duration + "\n"
+               + "CompletionT: " + completionTime + "\n\n";
     }
 
     @Override
@@ -52,7 +64,7 @@ public class Operation {
             return false;
         } else if (op == this) {
             return true;
-        } else if (((Operation) op).machine == this.machine && ((Operation) op).job == this.job) {
+        } else if (((Operation)op).machine == this.machine && ((Operation)op).job == this.job) {
             return true;
         } else {
             return false;

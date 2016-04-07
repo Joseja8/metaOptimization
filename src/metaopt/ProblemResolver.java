@@ -30,21 +30,30 @@ public class ProblemResolver {
     public void resolveNTimes() {  // TODO: Separate useful data from resolve loop.
         int total = 0;
         for (int i = 0; i < nIter; i++) {
-            total += resolve(i);
+            total += resolve();
         }
         int averageMaxSpan = total / nIter;
         System.out.print("Average MAX_SPAN: " + averageMaxSpan + "\n");
     }
 
-    private int resolve(int iteration) {
+    private int resolve() {
+                Problem problem = new Problem(file);
+                int maxSpan = -1;
         switch (algorithm) {
             case GT:
-                Problem problem = new Problem(file);
-                AlgGT algorithmGT = new AlgGT(problem, rand.nextInt());
-                algorithmGT.compute();
-                // DEBUG (print solutions).
-                //System.out.print("\n ##### Solution "+ iteration + ": " + problem.chromosome + "\n");
-                return problem.decodeChromosome(); //TODO: Problem should decode chromosome to give the MAX_SPAN (I hope so).
+                AlgGT algorithmGT = new AlgGT(rand.nextInt());
+                algorithmGT.generateSolution(problem);
+                maxSpan = problem.decodeChromosome();
+                return maxSpan;
+            case BL:
+                AlgBL algorithmBL = new AlgBL(rand);
+                Problem solution = algorithmBL.generateSolution(problem);
+                if (solution == null) {
+                    System.out.println("La busqueda local no produjo ningun resultado");
+                    return -1;
+                }
+                maxSpan = solution.decodeChromosome();
+                return maxSpan;
             default:
                 return 0;
         }

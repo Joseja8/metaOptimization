@@ -25,9 +25,10 @@ public class Menu {
     long seed;
 
     public Menu() {
+        // Default params.
         file = "la01.txt";
-        algorithm = Algorithm.GT;
-        numberOfIterations = 1;
+        algorithm = Algorithm.BL;
+        numberOfIterations = 20;
         seed = 53599809;
     }
 

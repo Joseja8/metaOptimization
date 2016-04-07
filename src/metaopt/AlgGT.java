@@ -13,23 +13,21 @@ import java.util.ArrayList;
  */
 public class AlgGT {
 
-    Problem problem;
-    int randomNumber;
+    int rand;
     public ArrayList<Operation> schedulable;
     public ArrayList<Operation> notYetSchedulable;
     public ArrayList<Operation> scheduled;
     public ArrayList<Integer> timeToIdle;
 
-    AlgGT(Problem problem, int randomNumber) {
-        this.problem = problem;
-        this.randomNumber = randomNumber;
+    AlgGT(int rand) {
+        this.rand = rand;
         this.schedulable = new ArrayList<>();
         this.notYetSchedulable = new ArrayList<>();
         this.scheduled = new ArrayList<>();
         this.timeToIdle = new ArrayList<>();
     }
 
-    private void prepareAlgorithm() {
+    private void prepareAlgorithm(Problem problem) {
         // Init schedulable ops.
         for (int i = 0; i < problem.NUM_JOBS; i++) {
             schedulable.add(problem.OPS[i][0]);
@@ -40,21 +38,19 @@ public class AlgGT {
         }
     }
 
-    public void compute() {
-        prepareAlgorithm();
+    public void generateSolution(Problem problem) {
+        prepareAlgorithm(problem);
         while (!schedulable.isEmpty()) {
             Operation minOp = findMinCompletionTime();
             buildConflicts(minOp);
             Operation scheduledOp = chooseOpToSchedule();
             removeScheduledOpFromSchedulable(scheduledOp);
-            scheduled.add(scheduledOp);  // TODO: Update in Solution too?
-            // Debug (show scheduled operation).
-            //System.out.print(scheduledOp.toString());
+            scheduled.add(scheduledOp);
             timeToIdle.set(scheduledOp.machine, scheduledOp.getCompletionTime());
             updateStartingTimes(scheduledOp);
-            addSuccessors(scheduledOp);
+            addSuccessors(problem, scheduledOp);
         }
-        codifySolution();
+        codifySolution(problem);
     }
 
     private Operation findMinCompletionTime() {
@@ -79,7 +75,7 @@ public class AlgGT {
     }
 
     private Operation chooseOpToSchedule() {
-        int index = Math.abs(randomNumber % notYetSchedulable.size());  // Random pick (with seed).
+        int index = Math.abs(rand % notYetSchedulable.size());  // Random pick (with seed).
         Operation choosedOp = notYetSchedulable.get(index);
         notYetSchedulable.clear();
         return choosedOp;
@@ -94,7 +90,7 @@ public class AlgGT {
         }
     }
 
-    private void addSuccessors(Operation scheduledOp) { // MAACHINE != INDEX!!
+    private void addSuccessors(Problem problem, Operation scheduledOp) { // MAACHINE != INDEX!!
         int nextTask = -1;
         for (int i = 0; i < problem.OPS.length; i++) {
             for (int j = 0; j < problem.OPS[i].length; j++) {
@@ -119,7 +115,7 @@ public class AlgGT {
         }
     }
 
-    private void codifySolution() {
+    private void codifySolution(Problem problem) {
         ArrayList<Integer> chromosome = new ArrayList<>();
         for (Operation op : scheduled) {
             chromosome.add(op.job);
