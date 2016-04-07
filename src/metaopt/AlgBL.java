@@ -5,7 +5,6 @@
  */
 package metaopt;
 
-import java.util.Random;
 import metaopt.utils.ProblemUtils;
 
 /**
@@ -14,16 +13,16 @@ import metaopt.utils.ProblemUtils;
  */
 class AlgBL {
 
-    Random rand;
-    final int MAX_ITER = 1000;
+    final private int MAX_ITER = 1000;
+    private final int randomNumber;
 
-    public AlgBL(Random rand) {
-        this.rand = rand;
+    public AlgBL(int randomNumber) {
+        this.randomNumber = randomNumber;
     }
 
-    public Problem generateSolution(Problem problem) {  // TODO: Revise randomFuck.
+    public Problem compute(Problem problem) {
         // Generate initial solution.
-        AlgGT algorithmGT = new AlgGT(rand.nextInt());
+        AlgGT algorithmGT = new AlgGT(randomNumber);
         algorithmGT.generateSolution(problem);
         // Initialize variables.
         Problem previus = null;
@@ -47,7 +46,7 @@ class AlgBL {
     private Problem generateBetterNeighbor(Problem actual, Problem bestNeighbor) {
         Problem newNeighbor = null;
         for (int i = 0; i < MAX_ITER; i++) {
-            newNeighbor = ProblemUtils.generateNeighbor(actual, rand.nextInt());
+            newNeighbor = ProblemUtils.generateNeighbor(actual, randomNumber);
             if (newNeighbor.isBetterThan(bestNeighbor)) {
                 bestNeighbor = newNeighbor;
                 return newNeighbor;
