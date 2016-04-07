@@ -120,6 +120,6 @@ public class AlgGT {
         scheduled.stream().forEach((op) -> {
             chromosome.add(op.job);
         });
-        problem.chromosome = chromosome;
+        problem.chromosome = new ArrayList<>(chromosome);
     }
 }

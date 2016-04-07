@@ -28,8 +28,7 @@ public class Menu {
         // Default params.
         file = "la01.txt";
         algorithm = Algorithm.BL;
-        numberOfIterations = 20;
-        seed = 53599809;
+        numberOfIterations = 10;
     }
 
     public void mainMenu() {
@@ -40,8 +39,7 @@ public class Menu {
             System.out.println("1.  Seleccion del archivo (actual: " + file + ")");
             System.out.println("2.  Seleccion del algoritmo (actual: " + algorithm + ")");
             System.out.println("3.  Seleccion del numero de iteraciones (actual: " + numberOfIterations + ")");
-            System.out.println("4.  Seleccion de semilla (actual: " + seed + ")");
-            System.out.println("5.  Resolver el problema");
+            System.out.println("4.  Resolver el problema");
             System.out.print("\n");
             System.out.print("Introduzca un numero (-1 para salir): ");
             option = MenuUtils.getIntInput();
@@ -63,9 +61,6 @@ public class Menu {
                     selectNumberOfIterations();
                     break;
                 case 4:
-                    selectSeed();
-                    break;
-                case 5:
                     problemResolver();
                     break;
                 default:
@@ -182,18 +177,6 @@ public class Menu {
         }
     }
 
-    public void selectSeed() {
-        System.out.println("SELECCION DE SEMILLA");
-        System.out.print("\n");
-        System.out.print("Introduzca un numero (-1 para cancelar): ");
-        seed = MenuUtils.getLongInput();
-        try {
-            MenuUtils.cleanConsole();
-        } catch (InterruptedException ex) {
-            Logger.getLogger(Menu.class.getName()).log(Level.SEVERE, null, ex);
-        }
-    }
-
     public void problemResolver() {
         if (numberOfIterations <= 0) {
             System.out.print("Numero de iteraciones no valido");
@@ -213,8 +196,11 @@ public class Menu {
             return;
         }
 
-        ProblemResolver problemResolver = new ProblemResolver(file, algorithm, numberOfIterations, seed);
-        problemResolver.resolveNTimes();
+        ProblemResolver problemResolver = new ProblemResolver(file, algorithm);
+        int averageMakespan = problemResolver.getAverage(numberOfIterations);
+        System.out.print("Average MAX_SPAN: " + averageMakespan + "\n");
+        //float makespanDeviation = problemResolver.getDeviation(numberOfIterations);
+        //System.out.print("Makespan deviation: " + makespanDeviation + "\n");
     }
 
 }

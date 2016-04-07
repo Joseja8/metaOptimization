@@ -11,7 +11,7 @@ import java.util.Random;
  *
  * @author joseja
  */
-public class AlgorithmUtils {
+public class RandomStatic {
     
     private static final Random RNG = new Random(53599809);
     

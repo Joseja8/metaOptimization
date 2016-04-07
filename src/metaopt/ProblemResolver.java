@@ -5,8 +5,9 @@
  */
 package metaopt;
 
+import java.util.ArrayList;
 import metaopt.Menu.Algorithm;
-import metaopt.utils.AlgorithmUtils;
+import metaopt.utils.RandomStatic;
 
 /**
  *
@@ -16,44 +17,50 @@ public class ProblemResolver {
 
     String file;
     Algorithm algorithm;
-    int nIter;
+    int bestMakespan;
+    ArrayList<Integer> solutions;
 
-    public ProblemResolver(String file, Menu.Algorithm algorithm,
-                           int numberOfIterations, long seed) {
+    public ProblemResolver(String file, Menu.Algorithm algorithm) {
         this.file = file;
         this.algorithm = algorithm;
-        this.nIter = numberOfIterations;
+        solutions = new ArrayList<>();
     }
 
-    public void resolveNTimes() {  // TODO: Separate useful data from resolve loop.
-        int total = 0;
-        for (int i = 0; i < nIter; i++) {
-            total += resolve();
+    public int getAverage(int numberOfIterations) {
+        generateMakespans(numberOfIterations);
+        int total = solutions.stream().mapToInt(Integer::intValue).sum();
+        return (total / numberOfIterations);
+    }
+
+    public float getDeviation(int numberOfIterations) {
+        generateMakespans(numberOfIterations);
+        float fraction = 1 / (float)numberOfIterations;
+        float sum = 0;
+        for (int i = 0; i < numberOfIterations; i++) {
+            sum += 100 * (((float)solutions.get(i) - (float)bestMakespan) / (float)bestMakespan);
         }
-        int averageMaxSpan = total / nIter;
-        System.out.print("Average MAX_SPAN: " + averageMaxSpan + "\n");
+        return (fraction * sum);
     }
 
-    private int resolve() {
-        int randomNumber = AlgorithmUtils.generateRandomNumber();
+    private void generateMakespans(int numberOfIterations) {
+        for (int i = 0; i < numberOfIterations; i++) {
+            solutions.add(findMakespan());
+        }
+    }
+
+    private int findMakespan() {
+        int randomNumber = RandomStatic.generateRandomNumber();
         Problem problem = new Problem(file);
-        int maxSpan;
+        this.bestMakespan = problem.BEST_MAKESPAN;
         switch (algorithm) {
             case GT:
                 AlgGT algorithmGT = new AlgGT(randomNumber);
                 algorithmGT.generateSolution(problem);
-                maxSpan = problem.decodeChromosome();
-                return maxSpan;
+                return problem.getMakespan();
             case BL:
                 AlgBL algorithmBL = new AlgBL(randomNumber);
-                Problem solution = algorithmBL.compute(problem);
-                if (solution != null) {
-                    maxSpan = solution.decodeChromosome();
-                    return maxSpan;
-                } else {
-                    System.out.println("La busqueda local no produjo ningun resultado");
-                    return -1;
-                }
+                problem = new Problem(algorithmBL.compute(problem));
+                return problem.getMakespan();
             default:
                 return 0;
         }

@@ -45,6 +45,11 @@ public class Problem {
         this.SOLUTION = problem.SOLUTION;
         this.MAKESPAN = problem.MAKESPAN;
     }
+    
+    public int getMakespan() {
+        update();
+        return MAKESPAN;
+    }
 
     /**
      * Transforms the chromosome into a auxMaxSpan value.
@@ -53,7 +58,7 @@ public class Problem {
      *
      * @return auxMaxSpan total time to complete all jobs.
      */
-    public int decodeChromosome() {
+    private void update() {
         ArrayList<Integer> startTimeJob = new ArrayList<>(NUM_JOBS);
         ArrayList<Integer> startTimeMachine = new ArrayList<>(NUM_MACHINES);
         ArrayList<Integer> nextJobs = new ArrayList<>(NUM_MACHINES);  // Jobs counting-index.
@@ -84,11 +89,10 @@ public class Problem {
             int nextJobIndex = nextJobs.get(j) + 1;
             nextJobs.set(j, nextJobIndex);
         }
-        return this.MAKESPAN;
     }
 
     public boolean isBetterThan(Problem problem) {
-        return this.decodeChromosome() < problem.decodeChromosome();
+        return (this.getMakespan() < problem.getMakespan());
     }
 
     private void updateMaxSpan(int completionTime) {
