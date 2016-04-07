@@ -21,6 +21,8 @@ public class Operation {
         this.job = -1;
         this.machine = -1;
         this.startTime = 0;
+        this.duration = 0;
+        updateCompletionTime();
     }
 
     public Operation(int job, int machine) {
@@ -28,6 +30,7 @@ public class Operation {
         this.machine = machine;
         this.startTime = 0;
         this.duration = 0;
+        updateCompletionTime();
     }
 
     public Operation(int job, int machine, int duration) {

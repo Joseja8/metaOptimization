@@ -30,6 +30,8 @@ public class ProblemUtils {
 
     /**
      *
+     * @param problem
+     * @param rand
      * @return
      */
     public static Problem generateNeighbor(Problem problem, int rand) {
@@ -40,5 +42,45 @@ public class ProblemUtils {
         int pos2 = Math.abs(size - pos1);
         Collections.swap(newChromosome, pos1, pos2);  // Mutation.
         return neighbor;
+    }
+
+    /**
+     * Print the symbolic solution matrix for debugging purposes.
+     * @param problem
+     */
+    public static void printSolution(Problem problem) {
+        System.out.println("Symbolic solution: ");
+        for (int i = 0; i < problem.NUM_MACHINES; i++) {
+            for (int j = 0; j < problem.NUM_JOBS; j++) {
+                System.out.print(problem.SOLUTION[i][j] + " ");
+            }
+            System.out.println();
+        }
+    }
+
+    /**
+     * Print the operations matrix for debugging purposes.
+     * @param problem
+     */
+    public static void printOps(Problem problem) {
+        System.out.println("Operations: ");
+        for (int i = 0; i < problem.NUM_JOBS; i++) {
+            for (int j = 0; j < problem.NUM_MACHINES; j++) {
+                System.out.print(problem.OPS[i][j] + " ");
+            }
+            System.out.println();
+        }
+    }
+
+    /**
+     * Print the chromosome for debugging purposes.
+     */
+    public static void printChromosome(Problem problem) {
+        if (problem.chromosome != null) {
+            System.out.println("Chromosome: ");
+            System.out.println(problem.chromosome);
+        } else {
+            System.out.println("PROBLEM_NOT_DECODED");
+        }
     }
 }

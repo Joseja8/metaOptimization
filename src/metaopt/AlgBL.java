@@ -26,10 +26,10 @@ class AlgBL {
         AlgGT algorithmGT = new AlgGT(rand.nextInt());
         algorithmGT.generateSolution(problem);
         // Initialize variables.
-        Problem previus = new Problem(problem);
+        Problem previus = null;
         Problem actual = new Problem(problem);
         Problem neighbor = new Problem(problem);
-        Problem bestNeighbor = new Problem(problem);;
+        Problem bestNeighbor = new Problem(problem);
         do {
             // Generate neighbors.
             neighbor = generateBetterNeighbor(actual, bestNeighbor);
@@ -50,6 +50,7 @@ class AlgBL {
             newNeighbor = ProblemUtils.generateNeighbor(actual, rand.nextInt());
             if (newNeighbor.isBetterThan(bestNeighbor)) {
                 bestNeighbor = newNeighbor;
+                return newNeighbor;
             }
         }
         return newNeighbor;

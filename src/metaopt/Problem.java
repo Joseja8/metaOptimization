@@ -1,7 +1,7 @@
 /*
- * To change this license header, choose License Headers in Project Properties.
+ * To change this license header, choose License Headers fileScanner Project Properties.
  * To change this template file, choose Tools | Templates
- * and open the template in the editor.
+ * and open the template fileScanner the editor.
  */
 package metaopt;
 
@@ -33,7 +33,7 @@ public class Problem {
     public Problem(String file) {
         this.file = file;
         loadData(file);
-        chromosome = null;
+        chromosome = new ArrayList();
         SOLUTION = new int[NUM_MACHINES][NUM_JOBS];
         MAKESPAN = -1;
     }
@@ -41,22 +41,9 @@ public class Problem {
     public Problem(Problem problem) {
         this.file = problem.file;
         loadData(file);
-        SOLUTION = new int[NUM_MACHINES][NUM_JOBS];
-        this.NUM_JOBS = problem.NUM_JOBS;
-        this.NUM_MACHINES = problem.NUM_MACHINES;
-        this.BEST_MAKESPAN = problem.BEST_MAKESPAN;
-        // Copy OPS matrix.
-        for (int i = 0; i < this.NUM_JOBS; i++) {
-            for (int j = 0; j < this.NUM_MACHINES; j++) {
-                this.OPS[i][j] = new Operation(problem.OPS[i][j]);
-            }
-        }
-        // Copy solution matrix.
-        for (int i = 0; i < this.NUM_MACHINES; i++) {
-            System.arraycopy(problem.SOLUTION[i], 0, this.SOLUTION[i], 0, this.NUM_JOBS);
-        }
-        this.MAKESPAN = problem.MAKESPAN;
         this.chromosome = new ArrayList<>(problem.chromosome);
+        this.SOLUTION = problem.SOLUTION;
+        this.MAKESPAN = problem.MAKESPAN;
     }
 
     /**
@@ -99,47 +86,9 @@ public class Problem {
         }
         return this.MAKESPAN;
     }
-    
+
     public boolean isBetterThan(Problem problem) {
         return this.decodeChromosome() < problem.decodeChromosome();
-    }
-
-    /**
-     * Print the symbolic solution matrix for debugging purposes.
-     */
-    public void printSolution() {
-        System.out.println("Symbolic solution: ");
-        for (int i = 0; i < NUM_MACHINES; i++) {
-            for (int j = 0; j < NUM_JOBS; j++) {
-                System.out.print(SOLUTION[i][j] + " ");
-            }
-            System.out.println();
-        }
-    }
-    /**
-     * Print the operations matrix for debugging purposes.
-     */
-    public void printOps() {
-        System.out.println("Operations: ");
-        for (int i = 0; i < NUM_JOBS; i++) {
-            for (int j = 0; j < NUM_MACHINES; j++) {
-                System.out.print(OPS[i][j] + " ");
-            }
-            System.out.println();
-        }
-    }
-
-    /**
-     * Print the chromosome for debugging purposes.
-     */
-    public void printChromosome() {
-        if (chromosome != null) {
-            System.out.println("Chromosome: ");
-            System.out.println(chromosome);
-        } else {
-            System.out.println("PROBLEM_NOT_DECODED");
-        }
-
     }
 
     private void updateMaxSpan(int completionTime) {
@@ -154,33 +103,37 @@ public class Problem {
      * @param file File to be loaded.
      */
     private void loadData(String file) {
+        Scanner fileScanner = null;
         try {
             String PATH = "src/metaopt/resources/";
             String fileToLoad = PATH + file;
 
-            Scanner in = new Scanner(new FileReader(fileToLoad));
+            fileScanner = new Scanner(new FileReader(fileToLoad));
 
-            NUM_JOBS = in.nextInt();
-            NUM_MACHINES = in.nextInt();
-            BEST_MAKESPAN = in.nextInt();
+            NUM_JOBS = fileScanner.nextInt();
+            NUM_MACHINES = fileScanner.nextInt();
+            BEST_MAKESPAN = fileScanner.nextInt();
 
             Operation[][] auxOPS = new Operation[NUM_JOBS][NUM_MACHINES];
             // Load jobs and times into OPS.
             for (int i = 0; i < NUM_JOBS; i++) {
                 for (int j = 0; j < NUM_MACHINES; j++) {
-                    auxOPS[i][j] = new Operation(i, j, in.nextInt());
+                    auxOPS[i][j] = new Operation(i, j, fileScanner.nextInt());
                 }
             }
             // Update machines of OPS.
             for (int i = 0; i < NUM_JOBS; i++) {
                 for (int j = 0; j < NUM_MACHINES; j++) {
-                    auxOPS[i][j].machine = in.nextInt() - 1;  // -1 because machines are 1-indexed.
+                    auxOPS[i][j].machine = fileScanner.nextInt() - 1;  // -1 because machines are 1-indexed.
                 }
             }
             // Update OPS.
-            OPS = auxOPS;
+            this.OPS = auxOPS;
         } catch (FileNotFoundException ex) {
             Logger.getLogger(Problem.class.getName()).log(Level.SEVERE, null, ex);
+        } finally {
+            fileScanner.close();
         }
     }
 }
+

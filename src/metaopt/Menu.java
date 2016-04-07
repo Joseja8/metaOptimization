@@ -26,9 +26,9 @@ public class Menu {
 
     public Menu() {
         // Default params.
-        file = "test.txt";
+        file = "la01.txt";
         algorithm = Algorithm.BL;
-        numberOfIterations = 1;
+        numberOfIterations = 20;
         seed = 53599809;
     }
 
