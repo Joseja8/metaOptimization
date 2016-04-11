@@ -28,7 +28,8 @@ class AlgBL {
         Problem actual = new Problem(problem);
         Problem neighbor = null;
         boolean improvementFound = true;
-        while (improvementFound) {
+        int iteration = 0;
+        while (improvementFound && iteration < MAX_ITER) {
             // Generate neighbors.
             neighbor = new Problem(generateBetterNeighbor(actual));
             if (neighbor.isBetterThan(actual)) {
@@ -36,17 +37,18 @@ class AlgBL {
             } else {
                 improvementFound = false;
             }
+            iteration++;
         }
         return actual;
     }
 
     private Problem generateBetterNeighbor(Problem actual) {
         Problem bestNeighbor = new Problem(actual);
-        for (int i = 0; i < MAX_ITER; i++) {
-            Problem neighbor = new Problem(ProblemUtils.generateNeighbor(actual));
+        for (int i = 0; i < 500; i++) {
+            Problem neighbor = new Problem(actual);
+            ProblemUtils.generateNeighbor(neighbor);
             if (neighbor.isBetterThan(bestNeighbor)) {
                 bestNeighbor = new Problem(neighbor);
-                //return bestNeighbor;  // This is for greedy.
             }
         }
         return bestNeighbor;

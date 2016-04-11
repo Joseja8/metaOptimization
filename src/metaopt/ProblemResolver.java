@@ -61,6 +61,10 @@ public class ProblemResolver {
                 AlgBL algorithmBL = new AlgBL(randomNumber);
                 problem = new Problem(algorithmBL.compute(problem));
                 return problem.getMakespan();
+            case BT:
+                AlgBT algorithmBT = new AlgBT(randomNumber);
+                problem = new Problem(algorithmBT.compute(problem));
+                return problem.getMakespan();
             default:
                 return 0;
         }
