@@ -19,4 +19,7 @@ public class RandomStatic {
         return RNG.nextInt();
     }
     
+    public static final Random getRNGesus() {
+        return RNG;
+    }
 }

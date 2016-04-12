@@ -48,7 +48,7 @@ public class Problem {
     
     public int getMakespan() {
         update();
-        return MAKESPAN;
+        return this.MAKESPAN;
     }
 
     /**
@@ -58,7 +58,8 @@ public class Problem {
      *
      * @return auxMaxSpan total time to complete all jobs.
      */
-    private void update() {
+    private void update() {  // TODO: FIX.
+        this.MAKESPAN = 0;
         ArrayList<Integer> startTimeJob = new ArrayList<>(NUM_JOBS);
         ArrayList<Integer> startTimeMachine = new ArrayList<>(NUM_MACHINES);
         ArrayList<Integer> nextJobs = new ArrayList<>(NUM_MACHINES);  // Jobs counting-index.
@@ -96,8 +97,8 @@ public class Problem {
     }
 
     private void updateMaxSpan(int completionTime) {
-        if (MAKESPAN < completionTime) {
-            MAKESPAN = completionTime;
+        if (this.MAKESPAN < completionTime) {
+            this.MAKESPAN = completionTime;
         }
     }
 

@@ -32,18 +32,33 @@ public class ProblemUtils {
      *
      * @param problem
      * @param rand
+     *
      * @return
      */
-    public static Problem generateNeighbor(Problem problem) {
-        Problem neighbor = new Problem(problem);
-        ArrayList newChromosome = new ArrayList(neighbor.chromosome);
-        Collections.shuffle(newChromosome);  // TODO: Random for now D:
-        neighbor.chromosome = new ArrayList<>(newChromosome);
-        return neighbor;
+    public static ArrayList<Integer> generateNeighbor(Problem problem) {  // TODO: CHECK.
+        int size = problem.chromosome.size();
+        int shuffleSize = (int)(size * 0.20);
+        int index1 = Math.abs(RandomStatic.generateRandomNumber() % (size-shuffleSize));
+        int index2 = index1 + shuffleSize;
+        ArrayList<Integer> aux = new ArrayList<>();
+        for (int i = index1; i < index2; i++) {
+            aux.add(problem.chromosome.get(i));
+        }
+        Collections.shuffle(aux, RandomStatic.getRNGesus());
+        int i = 0;
+        for (int j = index1; j < index2; j++) {
+            problem.chromosome.set(j, aux.get(i));
+            i++;
+        }
+        ArrayList<Integer> changes = new ArrayList<>();
+        changes.add(index1);
+        changes.add(index2);
+        return changes;
     }
 
     /**
      * Print the symbolic solution matrix for debugging purposes.
+     *
      * @param problem
      */
     public static void printSolution(Problem problem) {
@@ -58,6 +73,7 @@ public class ProblemUtils {
 
     /**
      * Print the operations matrix for debugging purposes.
+     *
      * @param problem
      */
     public static void printOps(Problem problem) {
