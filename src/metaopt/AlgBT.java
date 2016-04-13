@@ -17,8 +17,9 @@ import metaopt.utils.ProblemUtils;
 public class AlgBT {
 
     private final int MAX_ITER = 10000;
+    private final int MAX_TRIES = 50;
+    private final int MAX_NEIGHBORS = 300;
     ArrayList<ArrayList<Integer>> tabu;
-    int tabuIndex = 0;
     private final int randomNumber;
 
     public AlgBT(int randomNumber) {
@@ -32,7 +33,7 @@ public class AlgBT {
         int iteration = 0;
         int tries = 0;
         Problem bestSolution = new Problem(problem);
-        while (iteration < MAX_ITER && tries < 50) {
+        while (iteration < MAX_ITER && tries < MAX_TRIES) {
             problem = new Problem(chooseBestNeighbor(problem));
             if (problem.isBetterThan(bestSolution)) {
                 bestSolution = new Problem(problem);
@@ -51,7 +52,8 @@ public class AlgBT {
         bestIndexes.add(-1);
         bestIndexes.add(-1);
         boolean firstTime = true;
-        for (int i = 0; i < 100; i++) {
+        int tabuIndex = 0;
+        for (int i = 0; i < MAX_NEIGHBORS; i++) {
             Problem newNeighbor = new Problem(problem);
             ArrayList indexes = ProblemUtils.generateNeighbor(newNeighbor);
             if (firstTime) {
