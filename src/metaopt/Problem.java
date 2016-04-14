@@ -29,6 +29,7 @@ public class Problem {
     public int[][] SOLUTION;
     public int MAKESPAN;
     public ArrayList<Integer> chromosome;
+    public ArrayList<Integer> validation;
 
     public Problem(String file) {
         this.file = file;
@@ -62,33 +63,31 @@ public class Problem {
         this.MAKESPAN = 0;
         ArrayList<Integer> startTimeJob = new ArrayList<>(NUM_JOBS);
         ArrayList<Integer> startTimeMachine = new ArrayList<>(NUM_MACHINES);
-        ArrayList<Integer> nextJobs = new ArrayList<>(NUM_MACHINES);  // Jobs counting-index.
-        ArrayList<Integer> nextMachines = new ArrayList<>(NUM_JOBS);  // Machines counting-index.
+        ArrayList<Integer> jobIndexes = new ArrayList<>(NUM_MACHINES);  // Jobs counting-index.
+        ArrayList<Integer> machineIndexes = new ArrayList<>(NUM_JOBS);  // Machines counting-index.
         for (int i = 0; i < NUM_JOBS; i++) {
-            nextMachines.add(i, 0);
+            machineIndexes.add(i, 0);
             startTimeJob.add(i, 0);
         }
         for (int j = 0; j < NUM_MACHINES; j++) {
-            nextJobs.add(j, 0);
+            jobIndexes.add(j, 0);
             startTimeMachine.add(j, 0);
         }
         // Operation sequencing.
         for (int k = 0; k < chromosome.size(); k++) {
-            int i = chromosome.get(k);  // Job.
-            int j = OPS[i][nextMachines.get(i)].machine;  // Machine.
+            int job = chromosome.get(k);
+            int machine = OPS[job][machineIndexes.get(job)].machine;
             // Build symbolic solution.
-            SOLUTION[j][nextJobs.get(j)] = i;
-            // Semi-active scheduling.
-            int start = Math.max(startTimeJob.get(i), startTimeMachine.get(j));
-            startTimeJob.set(i, start + OPS[i][nextMachines.get(i)].getDuration());
-            startTimeMachine.set(j, start + OPS[i][nextMachines.get(i)].getDuration());
-            int completionTime = Math.max(startTimeJob.get(i), startTimeMachine.get(j));
-            updateMaxSpan(completionTime);
+            SOLUTION[machine][jobIndexes.get(machine)] = job;
             // Update counting-indexes.
-            int nextMachineIndex = nextMachines.get(i) + 1;
-            nextMachines.set(i, nextMachineIndex);
-            int nextJobIndex = nextJobs.get(j) + 1;
-            nextJobs.set(j, nextJobIndex);
+            machineIndexes.set(job, machineIndexes.get(job) + 1);
+            jobIndexes.set(machine, jobIndexes.get(machine) + 1);
+            // Semi-active scheduling.
+            int start = Math.max(startTimeJob.get(job), startTimeMachine.get(machine));
+            startTimeJob.set(job, start + OPS[job][machine].getDuration());
+            startTimeMachine.set(machine, start + OPS[job][machine].getDuration());
+            int completionTime = Math.max(startTimeJob.get(job), startTimeMachine.get(machine));
+            updateMaxSpan(completionTime);
         }
     }
 
@@ -97,8 +96,8 @@ public class Problem {
     }
 
     private void updateMaxSpan(int completionTime) {
-        if (this.MAKESPAN < completionTime) {
-            this.MAKESPAN = completionTime;
+        if (MAKESPAN < completionTime) {
+            MAKESPAN = completionTime;
         }
     }
 
@@ -139,6 +138,29 @@ public class Problem {
         } finally {
             fileScanner.close();
         }
+    }
+    
+    public void buildValidation() {
+        validation = new ArrayList<>();
+        for (int i = 0; i < NUM_JOBS; i++) {
+            validation.add(i, 0);
+        }
+        for (int i = 0; i < chromosome.size(); i++) {
+            int job = chromosome.get(i);
+            validation.set(job, (validation.get(job)+1));
+        }
+    }
+    
+    public void checkValidation() {
+        ArrayList<Integer> aux = new ArrayList<>();
+        for (int i = 0; i < NUM_JOBS; i++) {
+            aux.add(i, 0);
+        }
+        for (int i = 0; i < chromosome.size(); i++) {
+            int job = chromosome.get(i);
+            aux.set(job, (aux.get(job)+1));
+        }
+        assert aux.equals(validation) : "CHROMOSOME_NOT_VALID";
     }
 }
 

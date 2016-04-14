@@ -46,6 +46,7 @@ public class ProblemResolver {
         for (int i = 0; i < numberOfIterations; i++) {
             solutions.add(findMakespan());
         }
+        validateMakeSpan();
     }
 
     private int findMakespan() {
@@ -65,8 +66,18 @@ public class ProblemResolver {
                 AlgBT algorithmBT = new AlgBT(randomNumber);
                 problem = new Problem(algorithmBT.compute(problem));
                 return problem.getMakespan();
+            case ES:
+                AlgES algorithmES = new AlgES(randomNumber);
+                problem = new Problem(algorithmES.compute(problem));
+                return problem.getMakespan();
             default:
                 return 0;
         }
+    }
+    
+    private void validateMakeSpan() {
+        solutions.stream().forEach((makespan) -> {
+            assert makespan >= bestMakespan : "SOLUTION_TOO_GOOD_TO_BE_TRUE";
+        });
     }
 }
