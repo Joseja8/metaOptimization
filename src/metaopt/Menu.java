@@ -186,7 +186,7 @@ public class Menu {
                 Logger.getLogger(Menu.class.getName()).log(Level.SEVERE, null, ex);
             }
             return;
-        } else if (numberOfIterations > 20) {
+        } else if (numberOfIterations > 100) {
             System.out.print("Numero de iteraciones demasiado alto");
             try {
                 MenuUtils.cleanConsole();

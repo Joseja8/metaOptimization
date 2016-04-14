@@ -35,21 +35,16 @@ public class ProblemUtils {
      *
      * @return
      */
-    public static ArrayList<Integer> generateNeighbor(Problem problem) {  // TODO: CHECK.
+    public static ArrayList<Integer> generateNeighbor(Problem problem) {
         int size = problem.chromosome.size();
         int shuffleSize = (int)(size * 0.20);
-        int index1 = Math.abs(RandomStatic.generateRandomNumber() % (size-shuffleSize));
+        int index1 = Math.abs(RandomStatic.generateRandomNumber() % (size-shuffleSize+1));
         int index2 = index1 + shuffleSize;
-        ArrayList<Integer> aux = new ArrayList<>();
-        for (int i = index1; i < index2; i++) {
-            aux.add(problem.chromosome.get(i));
-        }
-        Collections.shuffle(aux, RandomStatic.getRNGesus());
-        int i = 0;
-        for (int j = index1; j < index2; j++) {
-            problem.chromosome.set(j, aux.get(i));
-            i++;
-        }
+        //System.out.println("I1: " + index1 + " - I2: " + index2);
+        assert index1 >= 0 || index2 < 50: "SHUFFLE_OUT_OF_RANGE";
+        problem.buildValidation();
+        Collections.shuffle(problem.chromosome.subList(index1, index2), RandomStatic.getRNGesus());
+        problem.checkValidation();
         ArrayList<Integer> changes = new ArrayList<>();
         changes.add(index1);
         changes.add(index2);
