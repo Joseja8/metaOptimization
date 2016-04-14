@@ -121,5 +121,6 @@ public class AlgGT {
             chromosome.add(op.job);
         });
         problem.chromosome = new ArrayList<>(chromosome);
+        problem.buildValidation();
     }
 }
