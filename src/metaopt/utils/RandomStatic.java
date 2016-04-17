@@ -15,8 +15,12 @@ public class RandomStatic {
     
     private static final Random RNG = new Random(53599809);
     
-    public static int generateRandomNumber() {
+    public static int generateRandomInt() {
         return RNG.nextInt();
+    }
+    
+    public static double generateRandomDouble() {
+        return RNG.nextDouble();
     }
     
     public static final Random getRNGesus() {

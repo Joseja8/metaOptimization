@@ -27,7 +27,7 @@ public class Menu {
     public Menu() {
         // Default params.
         file = "la01.txt";
-        algorithm = Algorithm.BT;
+        algorithm = Algorithm.ES;
         numberOfIterations = 1;
     }
 
