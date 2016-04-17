@@ -50,7 +50,7 @@ public class ProblemResolver {
     }
 
     private int findMakespan() {
-        int randomNumber = RandomStatic.generateRandomNumber();
+        int randomNumber = RandomStatic.generateRandomInt();
         Problem problem = new Problem(file);
         this.bestMakespan = problem.BEST_MAKESPAN;
         switch (algorithm) {

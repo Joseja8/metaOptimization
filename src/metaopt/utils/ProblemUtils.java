@@ -38,7 +38,7 @@ public class ProblemUtils {
     public static ArrayList<Integer> generateNeighbor(Problem problem) {
         int size = problem.chromosome.size();
         int shuffleSize = (int)(size * 0.20);
-        int index1 = Math.abs(RandomStatic.generateRandomNumber() % (size-shuffleSize+1));
+        int index1 = Math.abs(RandomStatic.generateRandomInt() % (size-shuffleSize+1));
         int index2 = index1 + shuffleSize;
         //System.out.println("I1: " + index1 + " - I2: " + index2);
         assert index1 >= 0 || index2 < 50: "SHUFFLE_OUT_OF_RANGE";
