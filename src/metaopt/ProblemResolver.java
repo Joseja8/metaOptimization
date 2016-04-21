@@ -26,10 +26,10 @@ public class ProblemResolver {
         solutions = new ArrayList<>();
     }
 
-    public int getAverage(int numberOfIterations) {
+    public double getAverage(int numberOfIterations) {
         generateMakespans(numberOfIterations);
-        int total = solutions.stream().mapToInt(Integer::intValue).sum();
-        return (total / numberOfIterations);
+        double total = solutions.stream().mapToInt(Integer::intValue).sum();
+        return (total / (double)numberOfIterations);
     }
 
     public float getDeviation(int numberOfIterations) {
@@ -55,7 +55,7 @@ public class ProblemResolver {
         this.bestMakespan = problem.BEST_MAKESPAN;
         switch (algorithm) {
             case GT:
-                AlgGT algorithmGT = new AlgGT(randomNumber);
+                AlgGT algorithmGT = new AlgGT(false);
                 algorithmGT.generateSolution(problem);
                 return problem.getMakespan();
             case BL:
@@ -63,12 +63,20 @@ public class ProblemResolver {
                 problem = new Problem(algorithmBL.compute(problem));
                 return problem.getMakespan();
             case BT:
-                AlgBT algorithmBT = new AlgBT(randomNumber);
+                AlgBT algorithmBT = new AlgBT();
                 problem = new Problem(algorithmBT.compute(problem));
                 return problem.getMakespan();
             case ES:
                 AlgES algorithmES = new AlgES(randomNumber);
                 problem = new Problem(algorithmES.compute(problem));
+                return problem.getMakespan();
+            case AGG:
+                AlgAGG algorithmAGG = new AlgAGG();
+                problem = new Problem(algorithmAGG.compute(problem));
+                return problem.getMakespan();
+            case AGE:
+                AlgAGE algorithmAGE = new AlgAGE();
+                problem = new Problem(algorithmAGE.compute(problem));
                 return problem.getMakespan();
             default:
                 return 0;

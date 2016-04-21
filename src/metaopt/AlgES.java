@@ -60,7 +60,7 @@ public class AlgES {
     }
 
     private Problem generateInitialSolution(Problem problem) {
-        AlgGT algorithmGT = new AlgGT(randomNumber);
+        AlgGT algorithmGT = new AlgGT(false);
         algorithmGT.generateSolution(problem);
         return problem;
     }

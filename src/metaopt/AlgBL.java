@@ -22,7 +22,7 @@ class AlgBL {
 
     public Problem compute(Problem problem) {
         // Generate initial solution.
-        AlgGT algorithmGT = new AlgGT(randomNumber);
+        AlgGT algorithmGT = new AlgGT(false);
         algorithmGT.generateSolution(problem);
         // Initialize variables.
         Problem actual = new Problem(problem);

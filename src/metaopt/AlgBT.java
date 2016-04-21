@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package metaopt;
 
 import java.util.ArrayList;
@@ -20,11 +15,9 @@ public class AlgBT {
     private final int MAX_TRIES = 50;
     private final int MAX_NEIGHBORS = 300;
     ArrayList<ArrayList<Integer>> tabu;
-    private final int randomNumber;
 
-    public AlgBT(int randomNumber) {
+    public AlgBT() {
         this.tabu = new ArrayList<>();
-        this.randomNumber = randomNumber;
     }
 
     public Problem compute(Problem problem) {
@@ -71,7 +64,7 @@ public class AlgBT {
     }
 
     private Problem generateInitialSolution(Problem problem) {
-        AlgGT algorithmGT = new AlgGT(randomNumber);
+        AlgGT algorithmGT = new AlgGT(false);
         algorithmGT.generateSolution(problem);
         return problem;
     }
