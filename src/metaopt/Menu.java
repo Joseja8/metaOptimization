@@ -16,7 +16,7 @@ import metaopt.utils.MenuUtils;
 public class Menu {
 
     public enum Algorithm {
-        GT, BL, BT, ES
+        GT, BL, BT, ES, AGG, AGE
     }
 
     String file;
@@ -27,7 +27,7 @@ public class Menu {
     public Menu() {
         // Default params.
         file = "la01.txt";
-        algorithm = Algorithm.ES;
+        algorithm = Algorithm.AGE;
         numberOfIterations = 1;
     }
 
@@ -137,6 +137,8 @@ public class Menu {
         System.out.println("2.  BL");
         System.out.println("3.  BT");
         System.out.println("4.  ES");
+        System.out.println("5.  AGG");
+        System.out.println("5.  AGE");
         System.out.print("\n");
         System.out.print("Introduzca un numero (-1 para cancelar): ");
         option = MenuUtils.getIntInput();
@@ -160,6 +162,12 @@ public class Menu {
             case 4:
                 algorithm = Algorithm.ES;
                 break;
+            case 5:
+                algorithm = Algorithm.AGG;
+                break;
+            case 6:
+                algorithm = Algorithm.AGE;
+                break;
             default:
                 return;
         }
@@ -168,7 +176,7 @@ public class Menu {
     public void selectNumberOfIterations() {
         System.out.println("SELECCION DE NUMERO DE ITERACIONES");
         System.out.print("\n");
-        System.out.print("Introduzca un numero (max 20 iteraciones) (-1 para cancelar): ");
+        System.out.print("Introduzca un numero (max 100 iteraciones) (-1 para cancelar): ");
         numberOfIterations = MenuUtils.getIntInput();
         try {
             MenuUtils.cleanConsole();
@@ -197,8 +205,9 @@ public class Menu {
         }
 
         ProblemResolver problemResolver = new ProblemResolver(file, algorithm);
-        int averageMakespan = problemResolver.getAverage(numberOfIterations);
+        double averageMakespan = problemResolver.getAverage(numberOfIterations);
         System.out.print("Average MAX_SPAN: " + averageMakespan + "\n");
+        // DEVIATION
         //float makespanDeviation = problemResolver.getDeviation(numberOfIterations);
         //System.out.print("Makespan deviation: " + makespanDeviation + "\n");
     }

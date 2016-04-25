@@ -6,6 +6,11 @@
 package metaopt;
 
 import java.util.ArrayList;
+import metaopt.Operation;
+import metaopt.Operation;
+import metaopt.Problem;
+import metaopt.Problem;
+import metaopt.utils.RandomStatic;
 
 /**
  *
@@ -13,18 +18,18 @@ import java.util.ArrayList;
  */
 public class AlgGT {
 
-    private final int randomNumber;
     private ArrayList<Operation> schedulable;
     private ArrayList<Operation> notYetSchedulable;
     private ArrayList<Operation> scheduled;
     private ArrayList<Integer> timeToIdle;
+    boolean random = false;
 
-    AlgGT(int randomNumber) {
-        this.randomNumber = randomNumber;
+    AlgGT(boolean random) {
         this.schedulable = new ArrayList<>();
         this.notYetSchedulable = new ArrayList<>();
         this.scheduled = new ArrayList<>();
         this.timeToIdle = new ArrayList<>();
+        this.random = random;
     }
 
     private void prepareAlgorithm(Problem problem) {
@@ -43,7 +48,12 @@ public class AlgGT {
         while (!schedulable.isEmpty()) {
             Operation minOp = findMinCompletionTime();
             buildConflicts(minOp);
-            Operation scheduledOp = chooseOpToSchedule();
+            Operation scheduledOp;
+            if (random) {
+                scheduledOp = chooseRandomOpToSchedule();
+            } else {
+                scheduledOp = chooseBestOpToSchedule();
+            }
             removeScheduledOpFromSchedulable(scheduledOp);
             scheduled.add(scheduledOp);
             timeToIdle.set(scheduledOp.machine, scheduledOp.getCompletionTime());
@@ -74,8 +84,22 @@ public class AlgGT {
         }
     }
 
-    private Operation chooseOpToSchedule() {
-        int index = Math.abs(randomNumber % notYetSchedulable.size());  // Random pick (with seed).
+    private Operation chooseRandomOpToSchedule() {
+        int index = Math.abs(RandomStatic.generateRandomInt() % notYetSchedulable.size());  // Random pick (with seed).
+        Operation choosedOp = notYetSchedulable.get(index);
+        notYetSchedulable.clear();
+        return choosedOp;
+    }
+
+    private Operation chooseBestOpToSchedule() {
+        int index = -1;
+        int minDuration = 9999;
+        for (int i = 0; i < notYetSchedulable.size(); i++) {
+            if (notYetSchedulable.get(i).getDuration() < minDuration) {
+                minDuration = notYetSchedulable.get(i).getDuration();
+                index = i;
+            }
+        }
         Operation choosedOp = notYetSchedulable.get(index);
         notYetSchedulable.clear();
         return choosedOp;

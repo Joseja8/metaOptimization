@@ -5,6 +5,9 @@
  */
 package metaopt;
 
+import metaopt.AlgGT;
+import metaopt.Problem;
+import metaopt.Problem;
 import metaopt.utils.ProblemUtils;
 import metaopt.utils.RandomStatic;
 
@@ -60,7 +63,7 @@ public class AlgES {
     }
 
     private Problem generateInitialSolution(Problem problem) {
-        AlgGT algorithmGT = new AlgGT(randomNumber);
+        AlgGT algorithmGT = new AlgGT(false);
         algorithmGT.generateSolution(problem);
         return problem;
     }
