@@ -6,6 +6,7 @@
 package metaopt.utils;
 
 import java.util.Scanner;
+import java.util.concurrent.TimeUnit;
 
 /**
  *
@@ -17,6 +18,10 @@ public class MenuUtils {
         for (int i = 0; i < 80; i++) {
             System.out.print("\n");
         }
+    }
+
+    public static void waitSeconds(int numberOfSeconds) throws InterruptedException {
+        TimeUnit.SECONDS.sleep(numberOfSeconds);
     }
 
     public static int getIntInput() {

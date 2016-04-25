@@ -8,16 +8,14 @@ package metaopt;
 import metaopt.utils.ProblemUtils;
 
 /**
- *
+ * Local Search Algorithm.
  * @author joseja
  */
 class AlgBL {
 
     private final int MAX_ITER = 10000;
-    private final int randomNumber;
 
-    public AlgBL(int randomNumber) {
-        this.randomNumber = randomNumber;
+    public AlgBL() {
     }
 
     public Problem compute(Problem problem) {

@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package metaopt;
 
 import java.util.logging.Level;
@@ -10,24 +5,40 @@ import java.util.logging.Logger;
 import metaopt.utils.MenuUtils;
 
 /**
- *
+ * Menu manager.
  * @author joseja
  */
 public class Menu {
 
+    /**
+     * List of all possible algorithms used to resolve problems.
+     */
     public enum Algorithm {
         GT, BL, BT, ES, AGG, AGE
     }
 
-    String file;
-    Algorithm algorithm;
-    int numberOfIterations;
-    long seed;
+    /**
+     * File containing the problem to resolve.
+     */
+    String fileToLoad;
 
+    /**
+     * Chosen algorithm to resolve the problem.
+     */
+    Algorithm algorithm;
+
+    /**
+     * Number of times the problem will be resolved with the specified
+     * algorithm.
+     */
+    int numberOfIterations;
+
+    /**
+     * Public constructor; the default parameters are initialized.
+     */
     public Menu() {
-        // Default params.
-        file = "la01.txt";
-        algorithm = Algorithm.AGG;
+        fileToLoad = "la01.txt";
+        algorithm = Algorithm.GT;
         numberOfIterations = 1;
     }
 
@@ -36,10 +47,11 @@ public class Menu {
             int option;
             System.out.println("MENU PRINCIPAL");
             System.out.print("\n");
-            System.out.println("1.  Seleccion del archivo (actual: " + file + ")");
+            System.out.println("1.  Seleccion del archivo (actual: " + fileToLoad + ")");
             System.out.println("2.  Seleccion del algoritmo (actual: " + algorithm + ")");
             System.out.println("3.  Seleccion del numero de iteraciones (actual: " + numberOfIterations + ")");
-            System.out.println("4.  Resolver el problema");
+            System.out.println("4.  Obtener media");
+            System.out.println("5.  Obtener desviación típica");
             System.out.print("\n");
             System.out.print("Introduzca un numero (-1 para salir): ");
             option = MenuUtils.getIntInput();
@@ -61,7 +73,10 @@ public class Menu {
                     selectNumberOfIterations();
                     break;
                 case 4:
-                    problemResolver();
+                    median();
+                    break;
+                case 5:
+                    deviation();
                     break;
                 default:
                     System.exit(0);
@@ -71,7 +86,7 @@ public class Menu {
 
     public void selectFile() {
         int option;
-        System.out.println("SELECCION DE ARCHIVO");
+        System.out.println("SELECCION DEL ARCHIVO");
         System.out.print("\n");
         System.out.println("1.  abz07");
         System.out.println("2.  abz08");
@@ -95,50 +110,48 @@ public class Menu {
 
         switch (option) {
             case 1:
-                file = "abz07.txt";
+                fileToLoad = "abz07.txt";
                 break;
             case 2:
-                file = "abz08.txt";
+                fileToLoad = "abz08.txt";
                 break;
             case 3:
-                file = "abz09.txt";
+                fileToLoad = "abz09.txt";
                 break;
             case 4:
-                file = "la01.txt";
+                fileToLoad = "la01.txt";
                 break;
             case 5:
-                file = "la02.txt";
+                fileToLoad = "la02.txt";
                 break;
             case 6:
-                file = "la03.txt";
+                fileToLoad = "la03.txt";
                 break;
             case 7:
-                file = "la04.txt";
+                fileToLoad = "la04.txt";
                 break;
             case 8:
-                file = "la05.txt";
+                fileToLoad = "la05.txt";
                 break;
             case 9:
-                file = "mt06.txt";
+                fileToLoad = "mt06.txt";
                 break;
             case 10:
-                file = "swv01.txt";
+                fileToLoad = "swv01.txt";
                 break;
-            default:
-                return;
         }
     }
 
     public void selectAlgorithm() {
         int option;
-        System.out.println("SELECCION DE ALGORITMO");
+        System.out.println("SELECCION DEL ALGORITMO");
         System.out.print("\n");
         System.out.println("1.  GT");
         System.out.println("2.  BL");
         System.out.println("3.  BT");
         System.out.println("4.  ES");
         System.out.println("5.  AGG");
-        System.out.println("5.  AGE");
+        System.out.println("6.  AGE");
         System.out.print("\n");
         System.out.print("Introduzca un numero (-1 para cancelar): ");
         option = MenuUtils.getIntInput();
@@ -168,15 +181,12 @@ public class Menu {
             case 6:
                 algorithm = Algorithm.AGE;
                 break;
-            default:
-                return;
         }
     }
 
     public void selectNumberOfIterations() {
-        System.out.println("SELECCION DE NUMERO DE ITERACIONES");
-        System.out.print("\n");
-        System.out.print("Introduzca un numero (max 100 iteraciones) (-1 para cancelar): ");
+        System.out.println("SELECCION DEL NUMERO DE ITERACIONES");
+        System.out.print("Introduzca un numero del 1 al 100 (-1 para cancelar): ");
         numberOfIterations = MenuUtils.getIntInput();
         try {
             MenuUtils.cleanConsole();
@@ -185,30 +195,45 @@ public class Menu {
         }
     }
 
-    public void problemResolver() {
-        if (numberOfIterations <= 0) {
-            System.out.print("Numero de iteraciones no valido");
-            try {
-                MenuUtils.cleanConsole();
-            } catch (InterruptedException ex) {
-                Logger.getLogger(Menu.class.getName()).log(Level.SEVERE, null, ex);
-            }
-            return;
-        } else if (numberOfIterations > 100) {
-            System.out.print("Numero de iteraciones demasiado alto");
-            try {
-                MenuUtils.cleanConsole();
-            } catch (InterruptedException ex) {
-                Logger.getLogger(Menu.class.getName()).log(Level.SEVERE, null, ex);
-            }
-            return;
+    public void median() {
+        if (areOptionsValid()) {
+            ResolverFramework resolver = new ResolverFramework(fileToLoad, algorithm);
+            double averageMakespan = resolver.getAverageMakespan(numberOfIterations);
+            System.out.println("Average MAX_SPAN: " + averageMakespan + "\n");
         }
+    }
 
-        ProblemResolver problemResolver = new ProblemResolver(file, algorithm);
-        double averageMakespan = problemResolver.getAverage(numberOfIterations);
-        System.out.print("Average MAX_SPAN: " + averageMakespan + "\n");
-        //float makespanDeviation = problemResolver.getDeviation(numberOfIterations);
-        //System.out.print("Makespan deviation: " + makespanDeviation + "\n");
+    public void deviation() {
+        if (areOptionsValid()) {
+            ResolverFramework resolver = new ResolverFramework(fileToLoad, algorithm);
+            double makespanDeviation = resolver.getDeviation(numberOfIterations);
+            System.out.print("Makespan deviation: " + makespanDeviation + "\n");
+        }
+    }
+
+    private boolean areOptionsValid() {
+        if (numberOfIterations <= 0) {
+            try {
+                MenuUtils.cleanConsole();
+                System.out.println("Numero de iteraciones no valido");
+                MenuUtils.waitSeconds(2);
+                MenuUtils.cleanConsole();
+            } catch (InterruptedException ex) {
+                Logger.getLogger(Menu.class.getName()).log(Level.SEVERE, null, ex);
+            }
+            return false;
+        } else if (numberOfIterations > 100) {
+            try {
+                MenuUtils.cleanConsole();
+                System.out.println("Numero de iteraciones demasiado alto");
+                MenuUtils.waitSeconds(2);
+                MenuUtils.cleanConsole();
+            } catch (InterruptedException ex) {
+                Logger.getLogger(Menu.class.getName()).log(Level.SEVERE, null, ex);
+            }
+            return false;
+        }
+        return true;
     }
 
 }

@@ -6,7 +6,7 @@
 package metaopt;
 
 /**
- *
+ * Basic problem element.
  * @author joseja
  */
 public class Operation {

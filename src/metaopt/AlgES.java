@@ -9,7 +9,7 @@ import metaopt.utils.ProblemUtils;
 import metaopt.utils.RandomStatic;
 
 /**
- *
+ * Simulated Annealing Algorithm.
  * @author Joseja
  */
 public class AlgES {
@@ -17,10 +17,8 @@ public class AlgES {
     private final int MAX_ITER = 10000;
     private double temperature;
     private final double STEP_SIZE = 0.9;
-    private final int randomNumber;
 
-    public AlgES(int randomNumber) {
-        this.randomNumber = randomNumber;
+    public AlgES() {
     }
 
     public Problem compute(Problem problem) {
@@ -36,12 +34,10 @@ public class AlgES {
                 ProblemUtils.generateNeighbor(newNeighbor);
                 int costDifference = newNeighbor.getMakespan() - problem.getMakespan();
                 if (costDifference <= 0) {
-                    System.out.println("BETTER");
                     problem = new Problem(newNeighbor);
                 } else {
                     double random = RandomStatic.generateRandomDouble();  // Random number between 0 and 1;
-                    if (random <= Math.exp(-costDifference / temperature)) {  // Accept bad solutions too.
-                    System.out.println("WORSE");
+                    if (random <= Math.exp(-costDifference / temperature)) {  
                         problem = new Problem(newNeighbor);
                     }
                 }

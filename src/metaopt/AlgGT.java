@@ -9,7 +9,7 @@ import java.util.ArrayList;
 import metaopt.utils.RandomStatic;
 
 /**
- *
+ * GT Algorithm.
  * @author joseja
  */
 public class AlgGT {

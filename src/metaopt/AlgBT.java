@@ -6,6 +6,7 @@ import java.util.Objects;
 import metaopt.utils.ProblemUtils;
 
 /**
+ * Tabu Search Algorithm.
  *
  * @author Joseja
  */
