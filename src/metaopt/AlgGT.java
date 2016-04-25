@@ -6,6 +6,10 @@
 package metaopt;
 
 import java.util.ArrayList;
+import metaopt.Operation;
+import metaopt.Operation;
+import metaopt.Problem;
+import metaopt.Problem;
 import metaopt.utils.RandomStatic;
 
 /**

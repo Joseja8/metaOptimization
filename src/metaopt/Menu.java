@@ -27,7 +27,7 @@ public class Menu {
     public Menu() {
         // Default params.
         file = "la01.txt";
-        algorithm = Algorithm.AGG;
+        algorithm = Algorithm.AGE;
         numberOfIterations = 1;
     }
 
@@ -207,6 +207,7 @@ public class Menu {
         ProblemResolver problemResolver = new ProblemResolver(file, algorithm);
         double averageMakespan = problemResolver.getAverage(numberOfIterations);
         System.out.print("Average MAX_SPAN: " + averageMakespan + "\n");
+        // DEVIATION
         //float makespanDeviation = problemResolver.getDeviation(numberOfIterations);
         //System.out.print("Makespan deviation: " + makespanDeviation + "\n");
     }

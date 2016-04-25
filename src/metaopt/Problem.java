@@ -19,7 +19,7 @@ import java.util.logging.Logger;
  *
  * @author joseja
  */
-public class Problem {
+public class Problem implements Comparable {
 
     public String file;
     public int NUM_JOBS;
@@ -46,10 +46,21 @@ public class Problem {
         this.SOLUTION = problem.SOLUTION;
         this.MAKESPAN = problem.MAKESPAN;
     }
-    
+
     public int getMakespan() {
         update();
         return this.MAKESPAN;
+    }
+
+    @Override
+    public int compareTo(Object o) {
+        Problem problem = (Problem)o;
+        if (this.getMakespan() < problem.getMakespan()) {
+            return -1;
+        } else if (this.getMakespan() > problem.getMakespan()) {
+            return 1;
+        }
+        return 0;
     }
 
     /**
@@ -139,7 +150,7 @@ public class Problem {
             fileScanner.close();
         }
     }
-    
+
     public void buildValidation() {
         validation = new ArrayList<>();
         for (int i = 0; i < NUM_JOBS; i++) {
@@ -147,10 +158,10 @@ public class Problem {
         }
         for (int i = 0; i < chromosome.size(); i++) {
             int job = chromosome.get(i);
-            validation.set(job, (validation.get(job)+1));
+            validation.set(job, (validation.get(job) + 1));
         }
     }
-    
+
     public void checkValidation() {
         ArrayList<Integer> aux = new ArrayList<>();
         for (int i = 0; i < NUM_JOBS; i++) {
@@ -158,9 +169,8 @@ public class Problem {
         }
         for (int i = 0; i < chromosome.size(); i++) {
             int job = chromosome.get(i);
-            aux.set(job, (aux.get(job)+1));
+            aux.set(job, (aux.get(job) + 1));
         }
         assert aux.equals(validation) : "CHROMOSOME_NOT_VALID";
     }
 }
-
