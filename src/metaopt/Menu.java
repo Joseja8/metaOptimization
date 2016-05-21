@@ -37,8 +37,9 @@ public class Menu {
      * Public constructor; the default parameters are initialized.
      */
     public Menu() {
+        // Default params.
         fileToLoad = "la01.txt";
-        algorithm = Algorithm.GT;
+        algorithm = Algorithm.AGE;
         numberOfIterations = 1;
     }
 

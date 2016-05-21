@@ -5,6 +5,9 @@
  */
 package metaopt;
 
+import metaopt.AlgGT;
+import metaopt.Problem;
+import metaopt.Problem;
 import metaopt.utils.ProblemUtils;
 
 /**
