@@ -5,9 +5,6 @@
  */
 package metaopt;
 
-import metaopt.AlgGT;
-import metaopt.Problem;
-import metaopt.Problem;
 import metaopt.utils.ProblemUtils;
 
 /**
@@ -17,10 +14,9 @@ import metaopt.utils.ProblemUtils;
 class AlgBL {
 
     private final int MAX_ITER = 10000;
-    private final int randomNumber;
+    private final int MAX_NEIGHBORS = 500;
 
-    public AlgBL(int randomNumber) {
-        this.randomNumber = randomNumber;
+    public AlgBL() {
     }
 
     public Problem compute(Problem problem) {
@@ -29,25 +25,21 @@ class AlgBL {
         algorithmGT.generateSolution(problem);
         // Initialize variables.
         Problem actual = new Problem(problem);
-        Problem neighbor = null;
-        boolean improvementFound = true;
-        int iteration = 0;
-        while (improvementFound && iteration < MAX_ITER) {
+        for (int i = 0; i < MAX_ITER; i++) {
             // Generate neighbors.
-            neighbor = new Problem(generateBetterNeighbor(actual));
+            Problem neighbor = new Problem(generateBetterNeighbor(actual));
             if (neighbor.isBetterThan(actual)) {
                 actual = new Problem(neighbor);
             } else {
-                improvementFound = false;
+                return actual;
             }
-            iteration++;
         }
         return actual;
     }
 
     private Problem generateBetterNeighbor(Problem actual) {
         Problem bestNeighbor = new Problem(actual);
-        for (int i = 0; i < 500; i++) {
+        for (int i = 0; i < MAX_NEIGHBORS; i++) {
             Problem neighbor = new Problem(actual);
             ProblemUtils.generateNeighbor(neighbor);
             if (neighbor.isBetterThan(bestNeighbor)) {

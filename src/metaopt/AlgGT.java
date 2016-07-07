@@ -6,10 +6,6 @@
 package metaopt;
 
 import java.util.ArrayList;
-import metaopt.Operation;
-import metaopt.Operation;
-import metaopt.Problem;
-import metaopt.Problem;
 import metaopt.utils.RandomStatic;
 
 /**
@@ -22,14 +18,14 @@ public class AlgGT {
     private ArrayList<Operation> notYetSchedulable;
     private ArrayList<Operation> scheduled;
     private ArrayList<Integer> timeToIdle;
-    boolean random = false;
+    boolean randomChoose = false;
 
     AlgGT(boolean random) {
         this.schedulable = new ArrayList<>();
         this.notYetSchedulable = new ArrayList<>();
         this.scheduled = new ArrayList<>();
         this.timeToIdle = new ArrayList<>();
-        this.random = random;
+        this.randomChoose = random;
     }
 
     private void prepareAlgorithm(Problem problem) {
@@ -49,7 +45,7 @@ public class AlgGT {
             Operation minOp = findMinCompletionTime();
             buildConflicts(minOp);
             Operation scheduledOp;
-            if (random) {
+            if (randomChoose) {
                 scheduledOp = chooseRandomOpToSchedule();
             } else {
                 scheduledOp = chooseBestOpToSchedule();

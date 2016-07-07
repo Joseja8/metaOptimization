@@ -5,9 +5,11 @@
  */
 package metaopt;
 
+import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import metaopt.utils.MenuUtils;
+import metaopt.utils.RandomStatic;
 
 /**
  *
@@ -26,8 +28,8 @@ public class Menu {
 
     public Menu() {
         // Default params.
-        file = "la01.txt";
-        algorithm = Algorithm.AGE;
+        file = "abz07.txt";
+        algorithm = Algorithm.GT;
         numberOfIterations = 1;
     }
 
@@ -40,6 +42,7 @@ public class Menu {
             System.out.println("2.  Seleccion del algoritmo (actual: " + algorithm + ")");
             System.out.println("3.  Seleccion del numero de iteraciones (actual: " + numberOfIterations + ")");
             System.out.println("4.  Resolver el problema");
+            System.out.println("5.  Resetear el RNG");
             System.out.print("\n");
             System.out.print("Introduzca un numero (-1 para salir): ");
             option = MenuUtils.getIntInput();
@@ -62,6 +65,9 @@ public class Menu {
                     break;
                 case 4:
                     problemResolver();
+                    break;
+                case 5:
+                    RandomStatic.resetRandom();
                     break;
                 default:
                     System.exit(0);
@@ -204,12 +210,13 @@ public class Menu {
             return;
         }
 
-        ProblemResolver problemResolver = new ProblemResolver(file, algorithm);
-        double averageMakespan = problemResolver.getAverage(numberOfIterations);
-        System.out.print("Average MAX_SPAN: " + averageMakespan + "\n");
-        // DEVIATION
-        //float makespanDeviation = problemResolver.getDeviation(numberOfIterations);
-        //System.out.print("Makespan deviation: " + makespanDeviation + "\n");
+        ArrayList<Double> results = new ArrayList<>();
+        ProblemResolver problemResolver = new ProblemResolver(file, algorithm, numberOfIterations);
+        results = problemResolver.getResults();
+        
+        System.out.print("MAXSPAN   : " + results.get(1) + "\n");
+        System.out.print("TIME      : " + results.get(0) + "\n");  
+        System.out.print("DEVIATION : " + results.get(2) + "\n");        
     }
 
 }

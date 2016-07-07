@@ -13,7 +13,7 @@ import java.util.Random;
  */
 public class RandomStatic {
     
-    private static final Random RNG = new Random(53599809);
+    private static Random RNG = new Random(53599809);
     
     public static int generateRandomInt() {
         return RNG.nextInt();
@@ -25,5 +25,9 @@ public class RandomStatic {
     
     public static final Random getRNGesus() {
         return RNG;
+    }
+    
+    public static final void resetRandom() {
+        RNG = new Random(53599809);
     }
 }

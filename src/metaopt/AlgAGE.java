@@ -13,7 +13,7 @@ import metaopt.utils.RandomStatic;
  *
  * @author Joseja
  */
-public class AlgAGE extends GeneticAlgorithm {
+public class AlgAGE extends GeneticAlgorithm {                                                                                                                           
 
     public AlgAGE() {
         RECOMBINE_PROB = 1;
@@ -37,8 +37,8 @@ public class AlgAGE extends GeneticAlgorithm {
 
     @Override
     protected void update(ArrayList<Problem> newPopulation) {
-        Problem worst1 = getWorstProblem(population);
-        Problem worst2 = getWorstProblem(population);
+        Problem worst1 = pickWorstProblem(population);
+        Problem worst2 = pickWorstProblem(population);
         Problem candidate1 = newPopulation.get(0);
         Problem candidate2 = newPopulation.get(1);
         ArrayList<Problem> candidates = new ArrayList<>();

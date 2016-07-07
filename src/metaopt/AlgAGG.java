@@ -28,11 +28,9 @@ public class AlgAGG extends GeneticAlgorithm {
 
     @Override
     protected void update(ArrayList<Problem> newPopulation) {
-        Problem bestProblem = getBestProblem(population);
-        Problem worstNewProblem = getWorstProblem(newPopulation);
-        if (bestProblem.isBetterThan(worstNewProblem)) {
-            newPopulation.add(bestProblem);
-        }
+        Problem bestProblem = pickBestProblem(population);
+        pickWorstProblem(newPopulation);
+        newPopulation.add(bestProblem);
         population = new ArrayList<>(newPopulation);
     }
 

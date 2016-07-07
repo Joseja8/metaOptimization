@@ -7,6 +7,7 @@ package metaopt;
 
 import java.io.FileNotFoundException;
 import java.io.FileReader;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Scanner;
 import java.util.logging.Level;
@@ -119,36 +120,26 @@ public class Problem implements Comparable {
      */
     private void loadData(String file) {
         Scanner fileScanner = null;
-        try {
-            String PATH = "src/metaopt/resources/";
-            String fileToLoad = PATH + file;
-
-            fileScanner = new Scanner(new FileReader(fileToLoad));
-
-            NUM_JOBS = fileScanner.nextInt();
-            NUM_MACHINES = fileScanner.nextInt();
-            BEST_MAKESPAN = fileScanner.nextInt();
-
-            Operation[][] auxOPS = new Operation[NUM_JOBS][NUM_MACHINES];
-            // Load jobs and times into OPS.
-            for (int i = 0; i < NUM_JOBS; i++) {
-                for (int j = 0; j < NUM_MACHINES; j++) {
-                    auxOPS[i][j] = new Operation(i, j, fileScanner.nextInt());
-                }
+        String PATH = "";
+        String fileToLoad = PATH + file;
+        InputStream in = this.getClass().getResourceAsStream(fileToLoad);
+        fileScanner = new Scanner(in);
+        NUM_JOBS = fileScanner.nextInt();
+        NUM_MACHINES = fileScanner.nextInt();
+        BEST_MAKESPAN = fileScanner.nextInt();
+        Operation[][] auxOPS = new Operation[NUM_JOBS][NUM_MACHINES];
+        for (int i = 0; i < NUM_JOBS; i++) {
+            for (int j = 0; j < NUM_MACHINES; j++) {
+                auxOPS[i][j] = new Operation(i, j, fileScanner.nextInt());
             }
-            // Update machines of OPS.
-            for (int i = 0; i < NUM_JOBS; i++) {
-                for (int j = 0; j < NUM_MACHINES; j++) {
-                    auxOPS[i][j].machine = fileScanner.nextInt() - 1;  // -1 because machines are 1-indexed.
-                }
-            }
-            // Update OPS.
-            this.OPS = auxOPS;
-        } catch (FileNotFoundException ex) {
-            Logger.getLogger(Problem.class.getName()).log(Level.SEVERE, null, ex);
-        } finally {
-            fileScanner.close();
         }
+        for (int i = 0; i < NUM_JOBS; i++) {
+            for (int j = 0; j < NUM_MACHINES; j++) {
+                auxOPS[i][j].machine = fileScanner.nextInt() - 1;  // -1 because machines are 1-indexed.
+            }
+        }
+        this.OPS = auxOPS;
+        fileScanner.close();
     }
 
     public void buildValidation() {

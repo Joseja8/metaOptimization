@@ -18,31 +18,36 @@ public class ProblemResolver {
     String file;
     Algorithm algorithm;
     int bestMakespan;
+    double time;
     ArrayList<Integer> solutions;
+    ArrayList<Double> results;
 
-    public ProblemResolver(String file, Menu.Algorithm algorithm) {
+    public ProblemResolver(String file, Menu.Algorithm algorithm, int iterations) {
         this.file = file;
         this.algorithm = algorithm;
         solutions = new ArrayList<>();
+        results = new ArrayList<>();
+        findSolutions(iterations);
+        results.add(time);
+        results.add(getAverage());
+        results.add(getDeviation());
     }
 
-    public double getAverage(int numberOfIterations) {
-        generateMakespans(numberOfIterations);
+    public double getAverage() {
         double total = solutions.stream().mapToInt(Integer::intValue).sum();
-        return (total / (double)numberOfIterations);
+        return (total / solutions.size());
     }
 
-    public float getDeviation(int numberOfIterations) {
-        generateMakespans(numberOfIterations);
-        float fraction = 1 / (float)numberOfIterations;
-        float sum = 0;
-        for (int i = 0; i < numberOfIterations; i++) {
-            sum += 100 * (((float)solutions.get(i) - (float)bestMakespan) / (float)bestMakespan);
+    public double getDeviation() {
+        double fraction = 1 / (double)solutions.size();
+        double sum = 0;
+        for (int i = 0; i < solutions.size(); i++) {
+            sum += 100 * ((solutions.get(i) - bestMakespan) / (double)bestMakespan);
         }
         return (fraction * sum);
     }
 
-    private void generateMakespans(int numberOfIterations) {
+    private void findSolutions(int numberOfIterations) {
         for (int i = 0; i < numberOfIterations; i++) {
             solutions.add(findMakespan());
         }
@@ -53,39 +58,55 @@ public class ProblemResolver {
         int randomNumber = RandomStatic.generateRandomInt();
         Problem problem = new Problem(file);
         this.bestMakespan = problem.BEST_MAKESPAN;
+        int result;
+        long startTime = System.currentTimeMillis();
         switch (algorithm) {
             case GT:
                 AlgGT algorithmGT = new AlgGT(false);
                 algorithmGT.generateSolution(problem);
-                return problem.getMakespan();
+                result = problem.getMakespan();
+                break;
             case BL:
-                AlgBL algorithmBL = new AlgBL(randomNumber);
+                AlgBL algorithmBL = new AlgBL();
                 problem = new Problem(algorithmBL.compute(problem));
-                return problem.getMakespan();
+                result = problem.getMakespan();
+                break;
             case BT:
                 AlgBT algorithmBT = new AlgBT();
                 problem = new Problem(algorithmBT.compute(problem));
-                return problem.getMakespan();
+                result = problem.getMakespan();
+                break;
             case ES:
-                AlgES algorithmES = new AlgES(randomNumber);
+                AlgES algorithmES = new AlgES();
                 problem = new Problem(algorithmES.compute(problem));
-                return problem.getMakespan();
+                result = problem.getMakespan();
+                break;
             case AGG:
                 AlgAGG algorithmAGG = new AlgAGG();
                 problem = new Problem(algorithmAGG.compute(problem));
-                return problem.getMakespan();
+                result = problem.getMakespan();
+                break;
             case AGE:
                 AlgAGE algorithmAGE = new AlgAGE();
                 problem = new Problem(algorithmAGE.compute(problem));
-                return problem.getMakespan();
+                result = problem.getMakespan();
+                break;
             default:
-                return 0;
+                result = 0;
+                break;
         }
+        long finishTime = System.currentTimeMillis();
+        time =  (finishTime - startTime);
+        return result;
     }
     
     private void validateMakeSpan() {
         solutions.stream().forEach((makespan) -> {
             assert makespan >= bestMakespan : "SOLUTION_TOO_GOOD_TO_BE_TRUE";
         });
+    }
+
+    ArrayList<Double> getResults() {
+        return results;
     }
 }

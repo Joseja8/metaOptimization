@@ -5,9 +5,6 @@
  */
 package metaopt;
 
-import metaopt.AlgGT;
-import metaopt.Problem;
-import metaopt.Problem;
 import metaopt.utils.ProblemUtils;
 import metaopt.utils.RandomStatic;
 
@@ -18,33 +15,28 @@ import metaopt.utils.RandomStatic;
 public class AlgES {
 
     private final int MAX_ITER = 10000;
-    private double temperature;
-    private final double STEP_SIZE = 0.9;
-    private final int randomNumber;
-
-    public AlgES(int randomNumber) {
-        this.randomNumber = randomNumber;
+    private final int TEMP_THRESHOLD = 5;
+    
+    public AlgES() {
     }
 
     public Problem compute(Problem problem) {
         generateInitialSolution(problem);
         double deviation = Math.abs(problem.getMakespan() - problem.BEST_MAKESPAN);
         double logarithm = Math.log(0.9);
-        temperature = -(deviation / logarithm);
+        double temperature = -(deviation / logarithm);
         int levelLength = problem.NUM_JOBS - problem.NUM_MACHINES;
         Problem bestSolution = new Problem(problem);
-        for (int i = 0; i < MAX_ITER && temperature > 5; i++) {
+        for (int i = 0; i < MAX_ITER && temperature > TEMP_THRESHOLD; i++) {
             for (int j = 0; j < levelLength; j++) {
                 Problem newNeighbor = new Problem(problem);
                 ProblemUtils.generateNeighbor(newNeighbor);
                 int costDifference = newNeighbor.getMakespan() - problem.getMakespan();
                 if (costDifference <= 0) {
-                    System.out.println("BETTER");
                     problem = new Problem(newNeighbor);
                 } else {
                     double random = RandomStatic.generateRandomDouble();  // Random number between 0 and 1;
                     if (random <= Math.exp(-costDifference / temperature)) {  // Accept bad solutions too.
-                    System.out.println("WORSE");
                         problem = new Problem(newNeighbor);
                     }
                 }
@@ -52,14 +44,11 @@ public class AlgES {
             if (problem.isBetterThan(bestSolution)) {
                 bestSolution = new Problem(problem);
             }
-            updateTemperature();
+            temperature *= 0.9;
+        
         }
         return bestSolution;
 
-    }
-
-    private void updateTemperature() {
-        temperature *= STEP_SIZE;
     }
 
     private Problem generateInitialSolution(Problem problem) {

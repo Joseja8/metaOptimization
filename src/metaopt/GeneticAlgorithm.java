@@ -13,7 +13,8 @@ abstract class GeneticAlgorithm {
 
     private final int MAX_POP = 50;
     private final int MAX_ITER = 20000;
-    private final double MUTATION_PROB = 1;
+    private final double MUTATION_PROB = 0.05;
+    private final int MAX_TRIES = 100;
     protected double RECOMBINE_PROB;
     protected double NUM_PARENTS;
     protected ArrayList<Problem> population;
@@ -23,20 +24,18 @@ abstract class GeneticAlgorithm {
     }
 
     final public Problem compute(Problem problem) {
-        Problem bestSolution;
         initPopulation(problem);
         double current = evaluate();
-        int counter = 0;
-        for (int i = 0; i < MAX_ITER && counter < 100; i++) {
+        for (int i = 0, tries = 0; i < MAX_ITER && tries < MAX_TRIES; i++) {
             ArrayList<Problem> newPopulation = select();
             recombine(newPopulation);
             mutate(newPopulation);
             update(newPopulation);
             double newScore = evaluate();
             if (newScore >= current) {
-                counter++;
+                tries++;
             } else {
-                counter = 0;
+                tries = 0;
                 current = newScore;
             }
         }
@@ -76,10 +75,8 @@ abstract class GeneticAlgorithm {
         int index2 = index1 + insertionSize;
         ArrayList<ArrayList<Integer>> offspring1 = createOffspring(parent1, index1, index2);
         ArrayList<ArrayList<Integer>> offspring2 = createOffspring(parent2, index1, index2);
-        Problem newParent1 = new Problem(replaceParent(parent1, offspring2));
-        Problem newParent2 = new Problem(replaceParent(parent2, offspring1));
-        parent1 = newParent1;
-        parent2 = newParent2;
+        replaceParent(parent1, offspring2);
+        replaceParent(parent2, offspring1);
     }
 
     private ArrayList<ArrayList<Integer>> createOffspring(Problem parent,
@@ -198,7 +195,7 @@ abstract class GeneticAlgorithm {
 
     abstract protected ArrayList<Problem> select();
 
-    protected Problem getBestProblem(ArrayList<Problem> population) {
+    protected Problem pickBestProblem(ArrayList<Problem> population) {
         Problem bestProblem = null;
         int bestIndex = -1;
         boolean firstTime = true;
@@ -216,7 +213,7 @@ abstract class GeneticAlgorithm {
         return bestProblem;
     }
 
-    protected Problem getWorstProblem(ArrayList<Problem> population) {
+    protected Problem pickWorstProblem(ArrayList<Problem> population) {
         Problem worstProblem = null;
         int worstIndex = -1;
         boolean firstTime = true;
